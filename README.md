@@ -1,2 +1,2 @@
-liferay-announcer
-=================
+-liferay-announcer
+-=================
