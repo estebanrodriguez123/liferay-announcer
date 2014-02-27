@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping default-lazy="false" auto-import="false">
+	<import class="com.rivetlogic.portlet.model.Completed" />
+	<import class="com.rivetlogic.portlet.model.NotCompleted" />
+	<class name="com.rivetlogic.portlet.model.impl.CompletedImpl" table="rivetlogic_ann_Completed">
+		<cache usage="read-write" />
+		<composite-id name="primaryKey" class="com.rivetlogic.portlet.service.persistence.CompletedPK">
+			<key-property name="USER_ID" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+			<key-property name="LAYOUT_PK" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		</composite-id>
+		<property name="ARTICLES_SET_ID" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+	</class>
+	<class name="com.rivetlogic.portlet.model.impl.NotCompletedImpl" table="rivetlogic_ann_NotCompleted">
+		<cache usage="read-write" />
+		<composite-id name="primaryKey" class="com.rivetlogic.portlet.service.persistence.NotCompletedPK">
+			<key-property name="USER_ID" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+			<key-property name="LAYOUT_PK" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		</composite-id>
+		<property name="PANEL_CLOSE_DATE" type="org.hibernate.type.TimestampType" />
+	</class>
+</hibernate-mapping>

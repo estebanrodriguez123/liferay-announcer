@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+
+<model-hints>
+	<model name="com.rivetlogic.portlet.model.Completed">
+		<field name="USER_ID" type="String" />
+		<field name="LAYOUT_PK" type="String" />
+		<field name="ARTICLES_SET_ID" type="String" />
+	</model>
+	<model name="com.rivetlogic.portlet.model.NotCompleted">
+		<field name="USER_ID" type="String" />
+		<field name="LAYOUT_PK" type="String" />
+		<field name="PANEL_CLOSE_DATE" type="Date" />
+	</model>
+</model-hints>

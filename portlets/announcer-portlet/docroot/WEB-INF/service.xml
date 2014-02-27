@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE service-builder PUBLIC "-//Liferay//DTD Service Builder 6.1.0//EN" "http://www.liferay.com/dtd/liferay-service-builder_6_1_0.dtd">
+<service-builder package-path="com.rivetlogic.portlet">
+	<author>charles.rodriguez</author>
+	<namespace>rivetlogic_ann</namespace>
+
+	<entity name="NotCompleted" local-service="true" remote-service="true">
+
+		<!-- PK fields -->
+
+		<column name="USER_ID" type="String" primary="true" />
+		<column name="LAYOUT_PK" type="String" primary="true" />
+		
+		<!-- Other fields -->
+
+		<column name="PANEL_CLOSE_DATE" type="Date" />
+
+		<!-- Finder methods -->
+
+        <finder name="UserLayoutKey" return-type="NotCompleted">
+        	<finder-column name="USER_ID" />
+        	<finder-column name="LAYOUT_PK" />
+        </finder>
+	</entity>
+	
+	<entity name="Completed" local-service="true" remote-service="true">
+
+		<!-- PK fields -->
+
+		<column name="USER_ID" type="String" primary="true" />
+		<column name="LAYOUT_PK" type="String" primary="true" />
+
+		<!-- Other fields -->
+
+		<column name="ARTICLES_SET_ID" type="String" />
+
+		<!-- Finder methods -->
+		
+		<finder name="UserLayoutKey" return-type="Completed">
+         	<finder-column name="USER_ID" />
+        	<finder-column name="LAYOUT_PK" />
+        </finder>
+	</entity>
+</service-builder>

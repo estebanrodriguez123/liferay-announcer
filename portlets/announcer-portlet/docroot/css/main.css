@@ -1,0 +1,25 @@
+.aui-carousel-item{
+   display:none;	 
+}
+div.announcer-articles > menu{
+   display: none;
+}
+.carousel-item-active{
+   display:block;
+}
+.aui-toolbar-item{
+   vertical-align: middle;
+}
+.portal-popup{
+   padding: 0px !important;
+}
+.close-announcer{
+	visibility:hidden;
+}
+.portet-announcer-edit .aui-field-label-inline-label {
+   position: absolute;
+   display: block;
+}
+.portet-announcer-edit  textarea {
+   margin-left: 6em;
+}

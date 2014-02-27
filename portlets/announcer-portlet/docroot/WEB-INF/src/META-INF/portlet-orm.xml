@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+
+<entity-mappings xmlns="http://java.sun.com/xml/ns/persistence/orm" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.0" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_1_0.xsd">
+	<persistence-unit-metadata>
+		<xml-mapping-metadata-complete/>
+		<persistence-unit-defaults>
+			<access>PROPERTY</access>
+		</persistence-unit-defaults>
+	</persistence-unit-metadata>
+	<mapped-superclass class="com.rivetlogic.portlet.model.impl.CompletedModelImpl">
+		<id-class class="com.rivetlogic.portlet.service.persistence.CompletedPK" />
+		<attributes>
+			<id name="USER_ID" />
+			<id name="LAYOUT_PK" />
+			<basic name="ARTICLES_SET_ID" />
+			<transient name="modelAttributes" />
+			<transient name="primaryKey" />
+			<transient name="primaryKeyObj" />
+		</attributes>
+	</mapped-superclass>
+	<mapped-superclass class="com.rivetlogic.portlet.model.impl.NotCompletedModelImpl">
+		<id-class class="com.rivetlogic.portlet.service.persistence.NotCompletedPK" />
+		<attributes>
+			<id name="USER_ID" />
+			<id name="LAYOUT_PK" />
+			<basic name="PANEL_CLOSE_DATE">
+				<temporal>TIMESTAMP</temporal>
+			</basic>
+			<transient name="modelAttributes" />
+			<transient name="primaryKey" />
+			<transient name="primaryKeyObj" />
+		</attributes>
+	</mapped-superclass>
+	<entity class="com.rivetlogic.portlet.model.impl.CompletedImpl" name="Completed">
+		<table name="rivetlogic_ann_Completed" />
+		<attributes />
+	</entity>
+	<entity class="com.rivetlogic.portlet.model.impl.NotCompletedImpl" name="NotCompleted">
+		<table name="rivetlogic_ann_NotCompleted" />
+		<attributes />
+	</entity>
+</entity-mappings>
