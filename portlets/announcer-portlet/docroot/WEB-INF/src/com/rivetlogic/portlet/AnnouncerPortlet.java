@@ -167,6 +167,12 @@ public class AnnouncerPortlet extends MVCPortlet {
         String articleId = ParamUtil.getString(request, "articleId");
         PortletPreferences preferences = request.getPreferences();
         String articles= preferences.getValue("articlesRaw", "0");
+        String defaultArticle = preferences.getValue("defaultArticle", "0");
+        
+        if(defaultArticle.equals(articleId)){
+        	preferences.setValue("defaultArticle", "0");
+			preferences.store();
+        }
     		
         articles = articles.replace(String.valueOf(articleId), "");  //remove id
         articles = articles.replaceAll("\\s+"," ");
