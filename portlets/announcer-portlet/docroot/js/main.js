@@ -1,3 +1,22 @@
+/**
+* Copyright (C) 2005-2014 Rivet Logic Corporation.
+*
+* This program is free software; you can redistribute it and/or
+* modify it under the terms of the GNU General Public License
+* as published by the Free Software Foundation; version 2
+* of the License.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program; if not, write to the Free Software
+* Foundation, Inc., 51 Franklin Street, Fifth Floor,
+* Boston, MA 02110-1301, USA.
+*/
+
 AUI().use('aui-dialog', 'aui-io', function(A) {
 	
 	function MyAnnouncerClass() {
@@ -16,7 +35,7 @@ AUI().use('aui-dialog', 'aui-io', function(A) {
 					width:850,
 					height: 600,
 					bodyContent : 'Loading content...',
-					modal: true
+					modal: true,
 				},
 		    	id:'announcer-iframe',              
 				title : title,
@@ -57,7 +76,22 @@ AUI().use('aui-dialog', 'aui-io', function(A) {
 		    		tipModal.on(
 		    			'visibleChange', 
 		            	function() { 
-		            		window.parent.closeAnnouncer();
+		    				/*Ajax call to change user preference about displaying the pop up*/
+							var resourceURL= Liferay.PortletURL.createResourceURL();
+							resourceURL.setPortletId(portletId);
+							resourceURL.setParameter('cmd', 'NOTCOMPLETED');
+							resourceURL.setParameter('userId', uuid);
+							A.io(resourceURL.toString(), {
+								method: 'POST',
+								on: {
+									failure: function () {
+										if (console) { 
+											console.error('failure on ajax call');
+										}
+									}
+								}
+							});
+							modal.destroy();
 		            	});
 		    });
 			Liferay.provide(
@@ -67,28 +101,6 @@ AUI().use('aui-dialog', 'aui-io', function(A) {
 					portletId=id;
 				},
 				['aui-base','aui-dialog','aui-dialog-iframe']
-			);
-			Liferay.provide(
-				window,
-				'closeAnnouncer',
-				function() {
-					/*Ajax call to change user preference about displaying the pop up*/
-					var resourceURL= Liferay.PortletURL.createResourceURL();
-					resourceURL.setPortletId(portletId);
-					resourceURL.setParameter('cmd', 'NOTCOMPLETED');
-					resourceURL.setParameter('userId', uuid);
-					A.io(resourceURL.toString(), {
-						method: 'POST',
-						on: {
-							failure: function () {
-								if (console) { 
-									console.error('failure on ajax call');
-								}
-							}
-						}
-					});
-				},
-				['aui-base','aui-dialog','aui-dialog-iframe','liferay-portlet-url','aui-io-plugin']
 			); 
 		},
 		displayArticles: function(url) {

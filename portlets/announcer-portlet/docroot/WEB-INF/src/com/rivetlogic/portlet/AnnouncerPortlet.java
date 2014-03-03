@@ -1,3 +1,22 @@
+/**
+* Copyright (C) 2005-2014 Rivet Logic Corporation.
+*
+* This program is free software; you can redistribute it and/or
+* modify it under the terms of the GNU General Public License
+* as published by the Free Software Foundation; version 2
+* of the License.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program; if not, write to the Free Software
+* Foundation, Inc., 51 Franklin Street, Fifth Floor,
+* Boston, MA 02110-1301, USA.
+*/
+
 package com.rivetlogic.portlet;
 
 import java.io.IOException;
@@ -21,6 +40,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.servlet.SessionMessages;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.theme.ThemeDisplay;
@@ -113,8 +133,9 @@ public class AnnouncerPortlet extends MVCPortlet {
     	PortletPreferences preferences = request.getPreferences();
     	String articles = preferences.getValue("articlesRaw", "0");
     	
-    	String newIds = " ";
+    	String newIds = "";
     	String addedIds[] = ParamUtil.getString(request, "selectedIds").split(" ");
+    	
     	for(int i = 0; i < addedIds.length;i++){
     		if(!articles.contains(addedIds[i])){	//Don't add if it already exist
     			newIds += addedIds[i] + " ";
@@ -127,9 +148,14 @@ public class AnnouncerPortlet extends MVCPortlet {
     		articles = newIds;
     	}
     	articles = articles.replaceAll("\\s+"," ");   
-    	//System.out.println(articles);
     	updatePreferences(request,response,articles);
-
+    	
+    	if(newIds.equals("")){
+    		SessionMessages.add(request, "selected-articles");
+    	}
+    	else{
+    		SessionMessages.add(request, "added-articles");
+    	}
     	response.setRenderParameter(
     		"jspPage", "/html/announcer/showArticles.jsp");
 	}
@@ -145,6 +171,8 @@ public class AnnouncerPortlet extends MVCPortlet {
         articles = articles.replace(String.valueOf(articleId), "");  //remove id
         articles = articles.replaceAll("\\s+"," ");
         updatePreferences(request,response,articles);
+        
+        SessionMessages.add(request, "article-delete");
     }
     
     public void defaultArticle(ActionRequest request, ActionResponse response){
@@ -160,6 +188,7 @@ public class AnnouncerPortlet extends MVCPortlet {
 		} catch (IOException e) {
 			LOG.error(e);
 		}
+    	SessionMessages.add(request, "article-default");
     }
     
     public void upArticle(ActionRequest request, ActionResponse response)
@@ -194,6 +223,8 @@ public class AnnouncerPortlet extends MVCPortlet {
         ids = preferences.getValue("articleId", "0").split(",");
         request.setAttribute("ids", ids);
         	
+        SessionMessages.add(request, "article-up-down");
+        
         response.setRenderParameter(
         	"jspPage", "/html/announcer/edit.jsp");
     }
@@ -230,6 +261,8 @@ public class AnnouncerPortlet extends MVCPortlet {
         ids = preferences.getValue("articleId", "0").split(",");
         request.setAttribute("ids", ids);
         	
+        SessionMessages.add(request, "article-up-down");
+        
         response.setRenderParameter(
         	"jspPage", "/html/announcer/edit.jsp");
     }

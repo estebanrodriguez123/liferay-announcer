@@ -45,6 +45,9 @@ PortletURL iteratorURL = renderResponse.createRenderURL();
 iteratorURL.setParameter("jspPage", "/html/announcer/edit.jsp");
 %>
 
+<liferay-ui:success key="article-delete" message="article-deleted-message" />
+<liferay-ui:success key="article-up-down" message="article-up-down-message" />
+<liferay-ui:success key="article-default" message="article-default-message" />
 
 <div class="portet-announcer-edit">
 	<portlet:actionURL var="actionURL" name="savePreferences" /> 
