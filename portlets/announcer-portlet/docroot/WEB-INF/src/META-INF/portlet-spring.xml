@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" default-destroy-method="destroy" default-init-method="afterPropertiesSet" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+	<bean id="com.rivetlogic.portlet.service.CompletedLocalService" class="com.rivetlogic.portlet.service.impl.CompletedLocalServiceImpl" />
+	<bean id="com.rivetlogic.portlet.service.CompletedService" class="com.rivetlogic.portlet.service.impl.CompletedServiceImpl" />
+	<bean id="com.rivetlogic.portlet.service.persistence.CompletedPersistence" class="com.rivetlogic.portlet.service.persistence.CompletedPersistenceImpl" parent="basePersistence" />
+	<bean id="com.rivetlogic.portlet.service.NotCompletedLocalService" class="com.rivetlogic.portlet.service.impl.NotCompletedLocalServiceImpl" />
+	<bean id="com.rivetlogic.portlet.service.NotCompletedService" class="com.rivetlogic.portlet.service.impl.NotCompletedServiceImpl" />
+	<bean id="com.rivetlogic.portlet.service.persistence.NotCompletedPersistence" class="com.rivetlogic.portlet.service.persistence.NotCompletedPersistenceImpl" parent="basePersistence" />
+</beans>
