@@ -19,49 +19,53 @@
     */
 --%>
 
-<%@ taglib uri="http://java.sun.com/portlet_2_0" prefix="portlet" %>
-<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
-<%@ taglib uri="http://liferay.com/tld/aui" prefix="aui" %>
-<%@ taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui" %>
-<%@ taglib uri="http://liferay.com/tld/theme" prefix="liferay-theme" %>
+<%@ taglib uri="http://java.sun.com/portlet_2_0" prefix="portlet"%>
+<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
+<%@ taglib uri="http://liferay.com/tld/aui" prefix="aui"%>
+<%@ taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui"%>
+<%@ taglib uri="http://liferay.com/tld/theme" prefix="liferay-theme"%>
 
-<%@ page import="javax.portlet.PortletPreferences" %>
-<%@ page import="javax.portlet.PortletURL" %>
+<%@ page import="javax.portlet.PortletPreferences"%>
+<%@ page import="javax.portlet.PortletURL"%>
 
-<%@ page import="com.liferay.portal.kernel.language.LanguageUtil" %>
-<%@ page import="com.liferay.portal.kernel.util.GetterUtil" %>
-<%@ page import="com.liferay.portal.kernel.bean.BeanParamUtil" %>
-<%@ page import="com.liferay.portal.kernel.util.HtmlUtil" %>
-<%@ page import="com.liferay.portal.kernel.util.ParamUtil" %>
-<%@ page import="com.liferay.portal.kernel.util.StringPool" %>
-<%@ page import="com.liferay.portal.kernel.util.PropsUtil" %>
-<%@ page import="com.liferay.portal.kernel.util.ListUtil" %>
-<%@ page import="com.liferay.portal.kernel.util.CalendarFactoryUtil" %>
-<%@ page import="com.liferay.portal.kernel.util.FastDateFormatFactoryUtil" %>
-<%@ page import="com.liferay.portal.kernel.log.Log" %>
+<%@ page import="com.liferay.portal.kernel.language.LanguageUtil"%>
+<%@ page import="com.liferay.portal.kernel.util.GetterUtil"%>
+<%@ page import="com.liferay.portal.kernel.bean.BeanParamUtil"%>
+<%@ page import="com.liferay.portal.kernel.util.HtmlUtil"%>
+<%@ page import="com.liferay.portal.kernel.util.ParamUtil"%>
+<%@ page import="com.liferay.portal.kernel.util.StringPool"%>
+<%@ page import="com.liferay.portal.kernel.util.PropsUtil"%>
+<%@ page import="com.liferay.portal.kernel.util.ListUtil"%>
+<%@ page import="com.liferay.portal.kernel.util.CalendarFactoryUtil"%>
+<%@ page
+    import="com.liferay.portal.kernel.util.FastDateFormatFactoryUtil"%>
+<%@ page import="com.liferay.portal.kernel.log.Log"%>
 
-<%@ page import="com.liferay.portal.theme.ThemeDisplay" %>
-<%@ page import="com.liferay.portal.kernel.util.WebKeys" %>
-<%@ page import="com.liferay.portal.util.PortletKeys" %>
-<%@ page import="com.liferay.portal.util.PortalUtil" %>
-<%@ page import="com.liferay.portal.kernel.portlet.LiferayWindowState" %>
-<%@ page import="com.liferay.portal.kernel.util.StringUtil" %>
-<%@ page import="com.liferay.portal.kernel.dao.search.ResultRow" %>
+<%@ page import="com.liferay.portal.theme.ThemeDisplay"%>
+<%@ page import="com.liferay.portal.kernel.util.WebKeys"%>
+<%@ page import="com.liferay.portal.util.PortletKeys"%>
+<%@ page import="com.liferay.portal.util.PortalUtil"%>
+<%@ page import="com.liferay.portal.kernel.portlet.LiferayWindowState"%>
+<%@ page import="com.liferay.portal.kernel.util.StringUtil"%>
+<%@ page import="com.liferay.portal.kernel.dao.search.ResultRow"%>
 
-<%@ page import="com.liferay.portlet.journal.model.JournalArticle" %>
-<%@ page import="com.liferay.portlet.journal.service.JournalArticleLocalServiceUtil"%>
+<%@ page import="com.liferay.portlet.journal.model.JournalArticle"%>
+<%@ page
+    import="com.liferay.portlet.journal.service.JournalArticleLocalServiceUtil"%>
 
-<%@ page import="java.util.ArrayList" %>
-<%@ page import="java.util.List" %>
-<%@ page import="java.util.Collections" %>
-<%@ page import="java.util.Date" %>
+<%@ page import="java.util.ArrayList"%>
+<%@ page import="java.util.List"%>
+<%@ page import="java.util.Collections"%>
+<%@ page import="java.util.Date"%>
 
-<%@ page import="com.rivetlogic.portlet.AnnouncerTools" %>
+<%@ page import="com.rivetlogic.portlet.AnnouncerTools"%>
 
 <portlet:defineObjects />
 <liferay-theme:defineObjects />
 
-<c:set var="pns"><portlet:namespace/></c:set>
+<c:set var="pns">
+    <portlet:namespace />
+</c:set>
 
 <%
 String redirect = ParamUtil.getString(request, "redirect");

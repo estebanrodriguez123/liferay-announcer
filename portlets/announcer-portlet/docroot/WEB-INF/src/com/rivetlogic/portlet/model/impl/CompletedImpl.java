@@ -15,20 +15,26 @@
 package com.rivetlogic.portlet.model.impl;
 
 /**
- * The extended model implementation for the Completed service. Represents a row in the &quot;rivetlogic_ann_Completed&quot; database table, with each column mapped to a property of this class.
- *
+ * The extended model implementation for the Completed service. Represents a row
+ * in the &quot;rivetlogic_ann_Completed&quot; database table, with each column
+ * mapped to a property of this class.
+ * 
  * <p>
- * Helper methods and all application logic should be put in this class. Whenever methods are added, rerun ServiceBuilder to copy their definitions into the {@link com.rivetlogic.portlet.model.Completed} interface.
+ * Helper methods and all application logic should be put in this class.
+ * Whenever methods are added, rerun ServiceBuilder to copy their definitions
+ * into the {@link com.rivetlogic.portlet.model.Completed} interface.
  * </p>
- *
+ * 
  * @author charles.rodriguez
  */
 public class CompletedImpl extends CompletedBaseImpl {
-	/*
-	 * NOTE FOR DEVELOPERS:
-	 *
-	 * Never reference this class directly. All methods that expect a completed model instance should use the {@link com.rivetlogic.portlet.model.Completed} interface instead.
-	 */
-	public CompletedImpl() {
-	}
+    /*
+     * NOTE FOR DEVELOPERS:
+     * 
+     * Never reference this class directly. All methods that expect a completed
+     * model instance should use the {@link
+     * com.rivetlogic.portlet.model.Completed} interface instead.
+     */
+    public CompletedImpl() {
+    }
 }

@@ -19,7 +19,7 @@
     */
 --%>
 
-<%@include file="/html/init.jsp" %>
+<%@include file="/html/init.jsp"%>
 
 <% 
 ResultRow row = (ResultRow)request.getAttribute(com.liferay.portal.kernel.util.WebKeys.SEARCH_CONTAINER_RESULT_ROW);
@@ -27,25 +27,26 @@ JournalArticle article = (JournalArticle)row.getObject();
 %>
 
 <portlet:actionURL name="deleteArticle" var="deleteArticleUrl">
-	<portlet:param name="articleId" value="<%=article.getArticleId()%>"/>
+    <portlet:param name="articleId" value="<%=article.getArticleId()%>" />
 </portlet:actionURL>
-			
+
 <portlet:actionURL name="upArticle" var="upArticleUrl">
-	<portlet:param name="articleId" value="<%=article.getArticleId()%>"/>
+    <portlet:param name="articleId" value="<%=article.getArticleId()%>" />
 </portlet:actionURL>
-			
+
 <portlet:actionURL name="downArticle" var="downArticleUrl">
-	<portlet:param name="articleId" value="<%=article.getArticleId()%>"/>
+    <portlet:param name="articleId" value="<%=article.getArticleId()%>" />
 </portlet:actionURL>
 
 <portlet:actionURL name="defaultArticle" var="defaultArticleUrl">
-	<portlet:param name="articleId" value="<%=article.getArticleId()%>"/>
+    <portlet:param name="articleId" value="<%=article.getArticleId()%>" />
 </portlet:actionURL>
 
 <liferay-ui:icon-menu>
-	<liferay-ui:icon-delete url="${deleteArticleUrl}" />
-	<liferay-ui:icon image="top" message="Up" url="${upArticleUrl}" />
-	<liferay-ui:icon image="bottom" message="Down" url="${downArticleUrl}" />
-	<liferay-ui:icon image="activate" message="Default Article" url="${defaultArticleUrl}" />
+    <liferay-ui:icon-delete url="${deleteArticleUrl}" />
+    <liferay-ui:icon image="top" message="Up" url="${upArticleUrl}" />
+    <liferay-ui:icon image="bottom" message="Down"
+        url="${downArticleUrl}" />
+    <liferay-ui:icon image="activate" message="Default Article"
+        url="${defaultArticleUrl}" />
 </liferay-ui:icon-menu>
-				

@@ -18,22 +18,28 @@ import com.rivetlogic.portlet.service.base.NotCompletedServiceBaseImpl;
 
 /**
  * The implementation of the not completed remote service.
- *
+ * 
  * <p>
- * All custom service methods should be put in this class. Whenever methods are added, rerun ServiceBuilder to copy their definitions into the {@link com.rivetlogic.portlet.service.NotCompletedService} interface.
- *
+ * All custom service methods should be put in this class. Whenever methods are
+ * added, rerun ServiceBuilder to copy their definitions into the
+ * {@link com.rivetlogic.portlet.service.NotCompletedService} interface.
+ * 
  * <p>
- * This is a remote service. Methods of this service are expected to have security checks based on the propagated JAAS credentials because this service can be accessed remotely.
+ * This is a remote service. Methods of this service are expected to have
+ * security checks based on the propagated JAAS credentials because this service
+ * can be accessed remotely.
  * </p>
- *
+ * 
  * @author charles.rodriguez
  * @see com.rivetlogic.portlet.service.base.NotCompletedServiceBaseImpl
  * @see com.rivetlogic.portlet.service.NotCompletedServiceUtil
  */
 public class NotCompletedServiceImpl extends NotCompletedServiceBaseImpl {
-	/*
-	 * NOTE FOR DEVELOPERS:
-	 *
-	 * Never reference this interface directly. Always use {@link com.rivetlogic.portlet.service.NotCompletedServiceUtil} to access the not completed remote service.
-	 */
+    /*
+     * NOTE FOR DEVELOPERS:
+     * 
+     * Never reference this interface directly. Always use {@link
+     * com.rivetlogic.portlet.service.NotCompletedServiceUtil} to access the not
+     * completed remote service.
+     */
 }

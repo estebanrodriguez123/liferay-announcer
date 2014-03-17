@@ -18,22 +18,28 @@ import com.rivetlogic.portlet.service.base.CompletedServiceBaseImpl;
 
 /**
  * The implementation of the completed remote service.
- *
+ * 
  * <p>
- * All custom service methods should be put in this class. Whenever methods are added, rerun ServiceBuilder to copy their definitions into the {@link com.rivetlogic.portlet.service.CompletedService} interface.
- *
+ * All custom service methods should be put in this class. Whenever methods are
+ * added, rerun ServiceBuilder to copy their definitions into the
+ * {@link com.rivetlogic.portlet.service.CompletedService} interface.
+ * 
  * <p>
- * This is a remote service. Methods of this service are expected to have security checks based on the propagated JAAS credentials because this service can be accessed remotely.
+ * This is a remote service. Methods of this service are expected to have
+ * security checks based on the propagated JAAS credentials because this service
+ * can be accessed remotely.
  * </p>
- *
+ * 
  * @author charles.rodriguez
  * @see com.rivetlogic.portlet.service.base.CompletedServiceBaseImpl
  * @see com.rivetlogic.portlet.service.CompletedServiceUtil
  */
 public class CompletedServiceImpl extends CompletedServiceBaseImpl {
-	/*
-	 * NOTE FOR DEVELOPERS:
-	 *
-	 * Never reference this interface directly. Always use {@link com.rivetlogic.portlet.service.CompletedServiceUtil} to access the completed remote service.
-	 */
+    /*
+     * NOTE FOR DEVELOPERS:
+     * 
+     * Never reference this interface directly. Always use {@link
+     * com.rivetlogic.portlet.service.CompletedServiceUtil} to access the
+     * completed remote service.
+     */
 }

@@ -19,33 +19,36 @@
     */
 --%>
 
-<%@include file="/html/init.jsp" %>
+<%@include file="/html/init.jsp"%>
 
-<portlet:renderURL var="contentURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
-	<portlet:param name="jspPage" value="/html/announcer/content.jsp"/>
+<portlet:renderURL var="contentURL"
+    windowState="<%= LiferayWindowState.POP_UP.toString() %>">
+    <portlet:param name="jspPage" value="/html/announcer/content.jsp" />
 </portlet:renderURL>
 
 <c:if test="${ defaultArticle != '0' }">
-	<div class="default-article">
-		<liferay-ui:journal-article 
-        	groupId="${groupId}" 
-        	articleId="${defaultArticle}" />
-	</div>
-	
-	<c:if test="${signedIn}">
-		<aui:fieldset>
-			<aui:button-row>
-				<aui:button type="button" cssClass="btn-primary" value="announcer-launch"
-		    		onClick="MyAnnouncerClass.displayContent('${user.uuid}','${articleVersionId}','${contentURL}','${pns}')" />
-	    	</aui:button-row>
-		</aui:fieldset>
-	</c:if>
+    <div class="default-article">
+        <liferay-ui:journal-article groupId="${groupId}"
+            articleId="${defaultArticle}" />
+    </div>
+
+    <c:if test="${signedIn}">
+        <aui:fieldset>
+            <aui:button-row>
+                <aui:button type="button" cssClass="btn-primary"
+                    value="announcer-launch"
+                    onClick="MyAnnouncerClass.displayContent('${user.uuid}','${articleVersionId}','${contentURL}','${pns}')" />
+            </aui:button-row>
+        </aui:fieldset>
+    </c:if>
 </c:if>
 
-<c:if test="${showAnnouncer}"> 
-<script type="text/javascript">
-AUI().ready(function(){
-	MyAnnouncerClass.displayContent('${user.uuid}','${articleVersionId}','${contentURL}','${pns}');
-});
-</script>
+<c:if test="${showAnnouncer}">
+    <script type="text/javascript">
+        AUI().ready(function() {
+            MyAnnouncerClass.displayContent('${user.uuid}',
+                    '${articleVersionId}', '${contentURL}',
+                    '${pns}');
+        });
+    </script>
 </c:if>

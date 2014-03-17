@@ -19,7 +19,7 @@
     */
 --%>
 
-<%@include file="/html/init.jsp" %>
+<%@include file="/html/init.jsp"%>
 
 <%
     String articles = renderRequest.getPreferences().getValue("articleId", "0");
@@ -31,9 +31,9 @@
     %>
     <div class="aui-carousel-item">
         <div class="aui-carousel-item-content">
-        	<liferay-ui:journal-article 
-        		groupId="<%=themeDisplay.getScopeGroupId()%>" 
-        		articleId="<%=article%>" />
+            <liferay-ui:journal-article
+                groupId="<%=themeDisplay.getScopeGroupId()%>"
+                articleId="<%=article%>" />
         </div>
     </div>
     <%
@@ -56,18 +56,20 @@ AUI().ready('aui-carousel','node','event', function(A) {
     window.parent.setPortletId(portletId);
     carouselNode.prepend(newNext);
     carouselNode.prepend(newPrev);
-    newNext.on('click',function(e){
-	    if(A.one('.carousel-menu-active').get("text")!=(A.all('.carousel-menu-index').size() - 1).toString()){
-	    	carousel.next();
-	    }
-	    if(A.one('.carousel-menu-active').get("text")==(A.all('.carousel-menu-index').size() - 1).toString()){
-	    	window.parent.MyAnnouncerClass.showAnnouncerCloseBtn('${pns}');
-	    }
-    });
-    newPrev.on('click',function(e){
-        if(A.one('.carousel-menu-active').get("text")!='0'){
-    		carousel.prev();
+    
+    newNext.on('click', function(e) {
+        if (A.one('.carousel-menu-active').get("text") != (A.all('.carousel-menu-index').size() - 1).toString()) {
+            carousel.next();
         }
-	});
+        if (A.one('.carousel-menu-active').get("text") == (A.all('.carousel-menu-index').size() - 1).toString()) {
+            window.parent.MyAnnouncerClass.showAnnouncerCloseBtn('${pns}');
+        }
+    });
+    
+    newPrev.on('click', function(e) {
+        if (A.one('.carousel-menu-active').get("text") != '0') {
+            carousel.prev();
+        }
+    });
 });
 </script>

@@ -27,91 +27,84 @@ import java.io.ObjectOutput;
 
 /**
  * The cache model class for representing Completed in entity cache.
- *
+ * 
  * @author charles.rodriguez
  * @see Completed
  * @generated
  */
 public class CompletedCacheModel implements CacheModel<Completed>,
-	Externalizable {
-	@Override
-	public String toString() {
-		StringBundler sb = new StringBundler(7);
+        Externalizable {
+    @Override
+    public String toString() {
+        StringBundler sb = new StringBundler(7);
 
-		sb.append("{USER_ID=");
-		sb.append(USER_ID);
-		sb.append(", LAYOUT_PK=");
-		sb.append(LAYOUT_PK);
-		sb.append(", ARTICLES_SET_ID=");
-		sb.append(ARTICLES_SET_ID);
-		sb.append("}");
+        sb.append("{USER_ID=");
+        sb.append(USER_ID);
+        sb.append(", LAYOUT_PK=");
+        sb.append(LAYOUT_PK);
+        sb.append(", ARTICLES_SET_ID=");
+        sb.append(ARTICLES_SET_ID);
+        sb.append("}");
 
-		return sb.toString();
-	}
+        return sb.toString();
+    }
 
-	@Override
-	public Completed toEntityModel() {
-		CompletedImpl completedImpl = new CompletedImpl();
+    @Override
+    public Completed toEntityModel() {
+        CompletedImpl completedImpl = new CompletedImpl();
 
-		if (USER_ID == null) {
-			completedImpl.setUSER_ID(StringPool.BLANK);
-		}
-		else {
-			completedImpl.setUSER_ID(USER_ID);
-		}
+        if (USER_ID == null) {
+            completedImpl.setUSER_ID(StringPool.BLANK);
+        } else {
+            completedImpl.setUSER_ID(USER_ID);
+        }
 
-		if (LAYOUT_PK == null) {
-			completedImpl.setLAYOUT_PK(StringPool.BLANK);
-		}
-		else {
-			completedImpl.setLAYOUT_PK(LAYOUT_PK);
-		}
+        if (LAYOUT_PK == null) {
+            completedImpl.setLAYOUT_PK(StringPool.BLANK);
+        } else {
+            completedImpl.setLAYOUT_PK(LAYOUT_PK);
+        }
 
-		if (ARTICLES_SET_ID == null) {
-			completedImpl.setARTICLES_SET_ID(StringPool.BLANK);
-		}
-		else {
-			completedImpl.setARTICLES_SET_ID(ARTICLES_SET_ID);
-		}
+        if (ARTICLES_SET_ID == null) {
+            completedImpl.setARTICLES_SET_ID(StringPool.BLANK);
+        } else {
+            completedImpl.setARTICLES_SET_ID(ARTICLES_SET_ID);
+        }
 
-		completedImpl.resetOriginalValues();
+        completedImpl.resetOriginalValues();
 
-		return completedImpl;
-	}
+        return completedImpl;
+    }
 
-	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
-		USER_ID = objectInput.readUTF();
-		LAYOUT_PK = objectInput.readUTF();
-		ARTICLES_SET_ID = objectInput.readUTF();
-	}
+    @Override
+    public void readExternal(ObjectInput objectInput) throws IOException {
+        USER_ID = objectInput.readUTF();
+        LAYOUT_PK = objectInput.readUTF();
+        ARTICLES_SET_ID = objectInput.readUTF();
+    }
 
-	@Override
-	public void writeExternal(ObjectOutput objectOutput)
-		throws IOException {
-		if (USER_ID == null) {
-			objectOutput.writeUTF(StringPool.BLANK);
-		}
-		else {
-			objectOutput.writeUTF(USER_ID);
-		}
+    @Override
+    public void writeExternal(ObjectOutput objectOutput) throws IOException {
+        if (USER_ID == null) {
+            objectOutput.writeUTF(StringPool.BLANK);
+        } else {
+            objectOutput.writeUTF(USER_ID);
+        }
 
-		if (LAYOUT_PK == null) {
-			objectOutput.writeUTF(StringPool.BLANK);
-		}
-		else {
-			objectOutput.writeUTF(LAYOUT_PK);
-		}
+        if (LAYOUT_PK == null) {
+            objectOutput.writeUTF(StringPool.BLANK);
+        } else {
+            objectOutput.writeUTF(LAYOUT_PK);
+        }
 
-		if (ARTICLES_SET_ID == null) {
-			objectOutput.writeUTF(StringPool.BLANK);
-		}
-		else {
-			objectOutput.writeUTF(ARTICLES_SET_ID);
-		}
-	}
+        if (ARTICLES_SET_ID == null) {
+            objectOutput.writeUTF(StringPool.BLANK);
+        } else {
+            objectOutput.writeUTF(ARTICLES_SET_ID);
+        }
+    }
 
-	public String USER_ID;
-	public String LAYOUT_PK;
-	public String ARTICLES_SET_ID;
+    public String USER_ID;
+    public String LAYOUT_PK;
+    public String ARTICLES_SET_ID;
 }
