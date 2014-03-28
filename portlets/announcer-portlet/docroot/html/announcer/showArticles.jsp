@@ -64,8 +64,16 @@ iteratorURL.setParameter("groupId", String.valueOf(groupId));
                     value="${content.modifiedDate}" />
                 <liferay-ui:search-container-column-text
                     name="article-actions">
-                    <input type="checkbox" name="selectArticleCheckBox"
-                        onClick="MyAnnouncerClass.handleClick('${content.articleId}', this,'${pns}')" />
+			        <c:choose>
+			        	<c:when test="${  rf:arrContains( addedArticleIds, content.articleId ) }">
+		                    <input type="checkbox" name="selectArticleCheckBox" id="selectArticleCheckBox" checked="checked" 
+		                        onchange="MyAnnouncerClass.handleClick('${content.articleId}', '<%= portletId %>', this)" />
+			        	</c:when>
+			        	<c:otherwise>
+		                    <input type="checkbox" name="selectArticleCheckBox" id="selectArticleCheckBox"
+		                        onchange="MyAnnouncerClass.handleClick('${content.articleId}', '<%= portletId %>', this)" />
+			        	</c:otherwise>
+			        </c:choose>
                 </liferay-ui:search-container-column-text>
             </liferay-ui:search-container-row>
 
@@ -74,12 +82,8 @@ iteratorURL.setParameter("groupId", String.valueOf(groupId));
 
         </liferay-ui:search-container>
 
-        <aui:input name="selectedIds" id="selectedIds" type="hidden" />
-
         <aui:fieldset>
             <aui:button-row>
-                <aui:button name="saveButton" type="submit"
-                    value="article-add" onclick="window.close()" />
                 <aui:button type="cancel" value="Close"
                     onClick="window.close()" />
             </aui:button-row>

@@ -1,0 +1,12 @@
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.0" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd">
+  <display-name>Rivet Functions</display-name>
+  <tlib-version>0.1</tlib-version>
+  <short-name>rf</short-name>
+  <uri>http://rivetlogic.com/tld/rivet-functions</uri>
+  <function>
+      <name>arrContains</name>
+      <description>To check if a array consists of given string value</description>
+      <function-class>com.rivetlogic.jstl.Functions</function-class>
+      <function-signature>boolean arrContains(java.lang.String[], java.lang.String)</function-signature>
+  </function>
+</taglib>

@@ -29,6 +29,8 @@ import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
 import javax.portlet.PortletException;
 import javax.portlet.PortletPreferences;
+import javax.portlet.PortletRequest;
+import javax.portlet.PortletResponse;
 import javax.portlet.ReadOnlyException;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
@@ -47,10 +49,38 @@ import com.liferay.portal.theme.ThemeDisplay;
 import com.liferay.portlet.journal.service.JournalArticleLocalServiceUtil;
 import com.liferay.util.bridges.mvc.MVCPortlet;
 
+/**
+ * The Class AnnouncerPortlet.
+ */
 public class AnnouncerPortlet extends MVCPortlet {
+    
+    /** The Constant LOG. */
     private static final Log LOG = LogFactoryUtil
             .getLog(AnnouncerPortlet.class);
-
+    
+    /** The Constant ARTICLE_SELECTION_DELIMITER. */
+    private static final String ARTICLE_SELECTION_DELIMITER = ",";
+    
+    /** The Constant LR_EMPTY_VALUE. */
+    private static final String LR_EMPTY_VALUE = "0";
+    
+    /* (non-Javadoc)
+     * @see javax.portlet.GenericPortlet#render(javax.portlet.RenderRequest, javax.portlet.RenderResponse)
+     */
+    @Override
+    public void render(RenderRequest request, RenderResponse response) throws PortletException, IOException{
+    	
+    	PortletPreferences preferences = request.getPreferences();
+        String defaultArticle = preferences.getValue("defaultArticle", LR_EMPTY_VALUE);
+        String[] addedArticleIds = preferences.getValue("articleId", LR_EMPTY_VALUE).split(ARTICLE_SELECTION_DELIMITER);
+        request.setAttribute("defaultArticle", defaultArticle);
+        request.setAttribute("addedArticleIds", addedArticleIds);
+    	super.render(request, response);
+    }
+    
+    /* (non-Javadoc)
+     * @see com.liferay.util.bridges.mvc.MVCPortlet#doView(javax.portlet.RenderRequest, javax.portlet.RenderResponse)
+     */
     @Override
     public void doView(RenderRequest request, RenderResponse response)
             throws IOException, PortletException {
@@ -63,14 +93,14 @@ public class AnnouncerPortlet extends MVCPortlet {
         boolean showAnnouncer = false;
         if (themeDisplay.isSignedIn()) {
             String articleVersionId = preferences.getValue(
-                    "articleIdConsecutive", "0");
-            String articleIds = preferences.getValue("articleId", "0");
+                    "articleIdConsecutive", LR_EMPTY_VALUE);
+            String articleIds = preferences.getValue("articleId", LR_EMPTY_VALUE);
             String articleIdsWithVersion = preferences.getValue(
-                    "articleIdWithVersion", "0");
+                    "articleIdWithVersion", LR_EMPTY_VALUE);
 
             StringBuilder articleWithVersionBuilder = new StringBuilder();
-            if (!articleIds.equals("0")) {
-                for (String articleId : articleIds.split(",")) {
+            if (!articleIds.equals(LR_EMPTY_VALUE)) {
+                for (String articleId : articleIds.split(ARTICLE_SELECTION_DELIMITER)) {
                     double version;
                     try {
                         version = JournalArticleLocalServiceUtil
@@ -105,12 +135,15 @@ public class AnnouncerPortlet extends MVCPortlet {
         request.setAttribute("groupId", groupId);
         request.setAttribute("showAnnouncer", showAnnouncer);
         request.setAttribute("signedIn", themeDisplay.isSignedIn());
-        String defaultArticle = preferences.getValue("defaultArticle", "0");
+        String defaultArticle = preferences.getValue("defaultArticle", LR_EMPTY_VALUE);
         request.setAttribute("defaultArticle", defaultArticle);
 
         super.doView(request, response);
     }
 
+    /* (non-Javadoc)
+     * @see com.liferay.util.bridges.mvc.MVCPortlet#doEdit(javax.portlet.RenderRequest, javax.portlet.RenderResponse)
+     */
     @Override
     public void doEdit(RenderRequest request, RenderResponse response)
             throws IOException, PortletException {
@@ -121,70 +154,20 @@ public class AnnouncerPortlet extends MVCPortlet {
         request.setAttribute("groupId", groupId);
 
         PortletPreferences preferences = request.getPreferences();
-        String[] ids = preferences.getValue("articleId", "0").split(",");
-        String defaultArticle = preferences.getValue("defaultArticle", "0");
+        String[] ids = preferences.getValue("articleId", LR_EMPTY_VALUE).split(ARTICLE_SELECTION_DELIMITER);
+        String defaultArticle = preferences.getValue("defaultArticle", LR_EMPTY_VALUE);
         request.setAttribute("defaultArticle", defaultArticle);
         request.setAttribute("ids", ids);
 
         super.doEdit(request, response);
     }
 
-    public void addArticles(ActionRequest request, ActionResponse response)
-            throws PortletException, IOException, PortalException,
-            SystemException {
-
-        PortletPreferences preferences = request.getPreferences();
-        String articles = preferences.getValue("articlesRaw", "0");
-
-        String newIds = "";
-        String addedIds[] = ParamUtil.getString(request, "selectedIds").split(
-                " ");
-
-        for (int i = 0; i < addedIds.length; i++) {
-            if (!articles.contains(addedIds[i])) { // Don't add if it already
-                                                   // exist
-                newIds += addedIds[i] + " ";
-            }
-        }
-
-        if (!articles.equals("0")) { // There is no articles
-            articles += newIds;
-        } else {
-            articles = newIds;
-        }
-        articles = articles.replaceAll("\\s+", " ");
-        updatePreferences(request, response, articles);
-
-        if (newIds.equals("")) {
-            SessionMessages.add(request, "selected-articles");
-        } else {
-            SessionMessages.add(request, "added-articles");
-        }
-        response.setRenderParameter("jspPage",
-                "/html/announcer/showArticles.jsp");
-    }
-
-    public void deleteArticle(ActionRequest request, ActionResponse response)
-            throws PortletException, IOException, PortalException,
-            SystemException {
-
-        String articleId = ParamUtil.getString(request, "articleId");
-        PortletPreferences preferences = request.getPreferences();
-        String articles = preferences.getValue("articlesRaw", "0");
-        String defaultArticle = preferences.getValue("defaultArticle", "0");
-
-        if (defaultArticle.equals(articleId)) {
-            preferences.setValue("defaultArticle", "0");
-            preferences.store();
-        }
-
-        articles = articles.replace(String.valueOf(articleId), ""); // remove id
-        articles = articles.replaceAll("\\s+", " ");
-        updatePreferences(request, response, articles);
-
-        SessionMessages.add(request, "article-delete");
-    }
-
+    /**
+     * Default article.
+     *
+     * @param request the request
+     * @param response the response
+     */
     public void defaultArticle(ActionRequest request, ActionResponse response) {
         String defaultArticle = ParamUtil.getString(request, "articleId");
         PortletPreferences preferences = request.getPreferences();
@@ -201,6 +184,16 @@ public class AnnouncerPortlet extends MVCPortlet {
         SessionMessages.add(request, "article-default");
     }
 
+    /**
+     * Up article.
+     *
+     * @param request the request
+     * @param response the response
+     * @throws PortletException the portlet exception
+     * @throws IOException Signals that an I/O exception has occurred.
+     * @throws PortalException the portal exception
+     * @throws SystemException the system exception
+     */
     public void upArticle(ActionRequest request, ActionResponse response)
             throws PortletException, IOException, PortalException,
             SystemException {
@@ -213,7 +206,7 @@ public class AnnouncerPortlet extends MVCPortlet {
         String articleId = ParamUtil.getString(request, "articleId");
         PortletPreferences preferences = request.getPreferences();
 
-        String[] ids = preferences.getValue("articleId", "0").split(",");
+        String[] ids = preferences.getValue("articleId", LR_EMPTY_VALUE).split(ARTICLE_SELECTION_DELIMITER);
         List<String> currentArticles = new ArrayList<String>();
         for (int i = 0; i < ids.length; i++) {
             currentArticles.add(ids[i]);
@@ -230,14 +223,27 @@ public class AnnouncerPortlet extends MVCPortlet {
         }
 
         updatePreferences(request, response, articlesRaw);
-        ids = preferences.getValue("articleId", "0").split(",");
+        ids = preferences.getValue("articleId", LR_EMPTY_VALUE).split(ARTICLE_SELECTION_DELIMITER);
         request.setAttribute("ids", ids);
+        
+        String defaultArticle = preferences.getValue("defaultArticle", LR_EMPTY_VALUE);
+        request.setAttribute("defaultArticle", defaultArticle);
 
         SessionMessages.add(request, "article-up-down");
 
         response.setRenderParameter("jspPage", "/html/announcer/edit.jsp");
     }
 
+    /**
+     * Down article.
+     *
+     * @param request the request
+     * @param response the response
+     * @throws PortletException the portlet exception
+     * @throws IOException Signals that an I/O exception has occurred.
+     * @throws PortalException the portal exception
+     * @throws SystemException the system exception
+     */
     public void downArticle(ActionRequest request, ActionResponse response)
             throws PortletException, IOException, PortalException,
             SystemException {
@@ -250,7 +256,7 @@ public class AnnouncerPortlet extends MVCPortlet {
         String articleId = ParamUtil.getString(request, "articleId");
         PortletPreferences preferences = request.getPreferences();
 
-        String[] ids = preferences.getValue("articleId", "0").split(",");
+        String[] ids = preferences.getValue("articleId", LR_EMPTY_VALUE).split(ARTICLE_SELECTION_DELIMITER);
         List<String> currentArticles = new ArrayList<String>();
         for (int i = 0; i < ids.length; i++) {
             currentArticles.add(ids[i]);
@@ -267,14 +273,27 @@ public class AnnouncerPortlet extends MVCPortlet {
         }
 
         updatePreferences(request, response, articlesRaw);
-        ids = preferences.getValue("articleId", "0").split(",");
+        ids = preferences.getValue("articleId", LR_EMPTY_VALUE).split(ARTICLE_SELECTION_DELIMITER);
         request.setAttribute("ids", ids);
+
+        String defaultArticle = preferences.getValue("defaultArticle", LR_EMPTY_VALUE);
+        request.setAttribute("defaultArticle", defaultArticle);
 
         SessionMessages.add(request, "article-up-down");
 
         response.setRenderParameter("jspPage", "/html/announcer/edit.jsp");
     }
 
+    /**
+     * Save preferences.
+     *
+     * @param request the request
+     * @param response the response
+     * @throws PortletException the portlet exception
+     * @throws IOException Signals that an I/O exception has occurred.
+     * @throws PortalException the portal exception
+     * @throws SystemException the system exception
+     */
     public void savePreferences(ActionRequest request, ActionResponse response)
             throws PortletException, IOException, PortalException,
             SystemException {
@@ -283,50 +302,9 @@ public class AnnouncerPortlet extends MVCPortlet {
         updatePreferences(request, response, articles);
     }
 
-    public void updatePreferences(ActionRequest request,
-            ActionResponse response, String articles) throws PortletException,
-            IOException, PortalException, SystemException {
-        PortletPreferences preferences = request.getPreferences();
-        String articleIds = articles.trim().replaceAll("\\s", ",");
-        if (articleIds.equals("")) {
-            articleIds = "0";
-        }
-
-        String articleWithVersionPref = "0";
-        String articleConsecutive = "0";
-        String articleWithVersion = "0";
-        if (!articleIds.equals("0")) {
-            articleWithVersionPref = preferences.getValue(
-                    "articleIdWithVersion", "0"); // articleId1:version ...
-            articleConsecutive = preferences.getValue("articleIdConsecutive",
-                    "0");
-
-            boolean updatedArticleIds = false, updatedArticleVersions = false;
-
-            updatedArticleIds = !preferences.getValue("articleId", "0").equals(
-                    articleIds);
-
-            ThemeDisplay themeDisplay = (ThemeDisplay) request
-                    .getAttribute(WebKeys.THEME_DISPLAY);
-            long groupId = themeDisplay.getScopeGroupId();
-
-            articleWithVersion = AnnouncerTools.getArticleIdsWithVersion(
-                    groupId, articleIds);
-            // Check if the articles version is still the same
-            updatedArticleVersions = !articleWithVersion
-                    .equals(articleWithVersionPref);
-            if (updatedArticleIds || updatedArticleVersions) {
-                articleConsecutive = String.valueOf((int) (Double
-                        .valueOf(articleConsecutive) + 1));
-            }
-        }
-        preferences.setValue("articlesRaw", articles);
-        preferences.setValue("articleId", articleIds);
-        preferences.setValue("articleIdWithVersion", articleWithVersion);
-        preferences.setValue("articleIdConsecutive", articleConsecutive);
-        preferences.store();
-    }
-
+    /* (non-Javadoc)
+     * @see com.liferay.util.bridges.mvc.MVCPortlet#serveResource(javax.portlet.ResourceRequest, javax.portlet.ResourceResponse)
+     */
     @Override
     public void serveResource(ResourceRequest request, ResourceResponse response)
             throws IOException, PortletException {
@@ -348,8 +326,117 @@ public class AnnouncerPortlet extends MVCPortlet {
                     .getString(request, "articleSerial");
 
             AnnouncerTools.addToCompleted(userId, layoutPK, articleSerial);
-        }
+        } else if ("UPDATE-ARTICLE-SELECTION".equalsIgnoreCase(action)){
+        	
+        	String articleId = ParamUtil.getString(request, "articleId");
+        	updateArticleSelection(request, response, articleId);
+        } 
 
         super.serveResource(request, response);
+    }
+    
+    /**
+     * Update article selection.
+     *
+     * @param request the request
+     * @param response the response
+     * @param articleId the article id
+     * @throws PortletException the portlet exception
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
+    private void updateArticleSelection(PortletRequest request, PortletResponse response, String articleId)
+            throws PortletException, IOException {
+
+        PortletPreferences preferences = request.getPreferences();
+        String articlesStr = preferences.getValue("articleId", LR_EMPTY_VALUE);
+        String[] articlesSelected; 
+        if(LR_EMPTY_VALUE.equalsIgnoreCase(articlesStr)){
+        	articlesSelected = new String[1];
+        	articlesSelected[0] = "";
+        } else {
+        	articlesSelected = articlesStr.split(ARTICLE_SELECTION_DELIMITER);
+        }
+        String defaultArticle = preferences.getValue("defaultArticle", LR_EMPTY_VALUE);
+        StringBuilder updatedArticleSelection = new StringBuilder();
+
+    	boolean isDeleted = false;
+    	for (int i = 0; i < articlesSelected.length; i++) {
+    		 if(articlesSelected[i].equalsIgnoreCase(articleId)){
+    			 //Since the articleId already exists, let us remove it. Also check if this is default article
+    			 articlesSelected[i] = LR_EMPTY_VALUE;
+    			 isDeleted = true;
+    			 if (defaultArticle.equalsIgnoreCase(articleId)) {
+    				 preferences.setValue("defaultArticle", LR_EMPTY_VALUE);
+    				 preferences.store();
+    			 }
+    			 break;
+    		 }
+    	 }
+    	 
+    	//Now iterate over the array to form the string
+    	for (int j = 0; j < articlesSelected.length; j++) {
+    		if((articlesSelected[j] != LR_EMPTY_VALUE) && !("".equalsIgnoreCase(articlesSelected[j]))){
+    			updatedArticleSelection.append(articlesSelected[j]);
+    			updatedArticleSelection.append(" ");
+    		}
+    	}
+    	 //If the articleId doesn't exist, then let us add it to selected ids.
+    	 if(!isDeleted){
+    		 updatedArticleSelection.append(articleId);
+    	 }
+        updatePreferences(request, response, updatedArticleSelection.toString());
+    }
+    
+    /**
+     * Update preferences.
+     *
+     * @param request the request
+     * @param response the response
+     * @param articles the articles
+     * @throws PortletException the portlet exception
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
+    private void updatePreferences(PortletRequest request,
+            PortletResponse response, String articles) throws PortletException,
+            IOException {
+        PortletPreferences preferences = request.getPreferences();
+        String articleIds = articles.trim().replaceAll("\\s", ARTICLE_SELECTION_DELIMITER);
+        if (articleIds.equals("")) {
+            articleIds = LR_EMPTY_VALUE;
+        }
+
+        String articleWithVersionPref = LR_EMPTY_VALUE;
+        String articleConsecutive = LR_EMPTY_VALUE;
+        String articleWithVersion = LR_EMPTY_VALUE;
+        if (!articleIds.equals(LR_EMPTY_VALUE)) {
+            articleWithVersionPref = preferences.getValue(
+                    "articleIdWithVersion", LR_EMPTY_VALUE); // articleId1:version ...
+            articleConsecutive = preferences.getValue("articleIdConsecutive",
+                    LR_EMPTY_VALUE);
+
+            boolean updatedArticleIds = false, updatedArticleVersions = false;
+
+            updatedArticleIds = !preferences.getValue("articleId", LR_EMPTY_VALUE).equals(
+                    articleIds);
+
+            ThemeDisplay themeDisplay = (ThemeDisplay) request
+                    .getAttribute(WebKeys.THEME_DISPLAY);
+            long groupId = themeDisplay.getScopeGroupId();
+
+            articleWithVersion = AnnouncerTools.getArticleIdsWithVersion(
+                    groupId, articleIds);
+            // Check if the articles version is still the same
+            updatedArticleVersions = !articleWithVersion
+                    .equals(articleWithVersionPref);
+            if (updatedArticleIds || updatedArticleVersions) {
+                articleConsecutive = String.valueOf((int) (Double
+                        .valueOf(articleConsecutive) + 1));
+            }
+        }
+        preferences.setValue("articlesRaw", articles);
+        preferences.setValue("articleId", articleIds);
+        preferences.setValue("articleIdWithVersion", articleWithVersion);
+        preferences.setValue("articleIdConsecutive", articleConsecutive);
+        preferences.store();
     }
 }

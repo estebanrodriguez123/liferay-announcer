@@ -24,6 +24,7 @@
 <%@ taglib uri="http://liferay.com/tld/aui" prefix="aui"%>
 <%@ taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui"%>
 <%@ taglib uri="http://liferay.com/tld/theme" prefix="liferay-theme"%>
+<%@ taglib uri="http://rivetlogic.com/tld/rivet-functions" prefix="rf"%>
 
 <%@ page import="javax.portlet.PortletPreferences"%>
 <%@ page import="javax.portlet.PortletURL"%>

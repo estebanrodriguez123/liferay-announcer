@@ -17,15 +17,26 @@
  * Boston, MA 02110-1301, USA.
  */
 
-AUI().use('aui-dialog', 'aui-io', function (A) {
+AUI().use('aui-dialog', 'aui-io', 'aui-modal', function (A) {
 
     function MyAnnouncerClass() {
         this.portletNamespace;
+        this.failureMessage = new A.Modal({
+            bodyContent: 'Request failed, please try again.',
+            centered: true,
+            headerContent: 'Announcer',
+            visible: false,
+            zIndex: Liferay.zIndex.TOOLTIP,
+            modal: true
+        }).render();   
     }
 
     MyAnnouncerClass.prototype = {
-
+        
+        failureMessage: null,    
+        
         displayContent: function (uuid, articleVersionId, url, pns) {
+            var instance = this;
             var title = "Announcer";
             var tipModal = null;
             var portletId = null;
@@ -62,9 +73,7 @@ AUI().use('aui-dialog', 'aui-io', function (A) {
                                     method: 'POST',
                                     on: {
                                         failure: function () {
-                                            if (console) {
-                                                console.error('failure on ajax call');
-                                            }
+                                            instance.failureMessage.show();
                                         }
                                     }
                                 });
@@ -85,9 +94,7 @@ AUI().use('aui-dialog', 'aui-io', function (A) {
                         method: 'POST',
                         on: {
                             failure: function () {
-                                if (console) {
-                                    console.error('failure on ajax call');
-                                }
+                                instance.failureMessage.show();
                             }
                         }
                     });
@@ -134,19 +141,22 @@ AUI().use('aui-dialog', 'aui-io', function (A) {
             nodeObject.setStyle('visibility', 'visible');
         },
 
-        handleClick: function (articleId, cb, pns) {
-            this.portletNamespace = pns;
-            var node = A.one('#' + this.portletNamespace + 'selectedIds');
-            var currentValue = node.val();
-            var newValue = "";
-            if (cb.checked) {
-                newValue = currentValue + " " + articleId;
-            } else {
-                newValue = currentValue.replace(articleId, "");
-            }
-            node.val(newValue);
+        handleClick: function (articleId, portletId, cb) {
+            var instance = this;
+            var articleSelectionURL = Liferay.PortletURL.createResourceURL();
+            articleSelectionURL.setPortletId(portletId);
+            articleSelectionURL.setParameter('cmd', 'UPDATE-ARTICLE-SELECTION');
+            articleSelectionURL.setParameter('articleId', articleId);
+            A.io(articleSelectionURL.toString(), {
+                method: 'POST',
+                on: {
+                    failure: function () {
+                    	cb.checked= (cb.checked)? false : true;
+                        instance.failureMessage.show();
+                    }
+                }
+            });
         }
-
     };
 
     window.MyAnnouncerClass = new MyAnnouncerClass();

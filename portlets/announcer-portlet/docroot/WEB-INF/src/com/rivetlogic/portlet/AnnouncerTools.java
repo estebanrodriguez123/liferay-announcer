@@ -39,12 +39,31 @@ import javax.portlet.ValidatorException;
 import java.io.IOException;
 import java.util.Date;
 
+/**
+ * The Class AnnouncerTools.
+ */
 public class AnnouncerTools {
+    
+    /** The log. */
     private static Log LOG = LogFactoryUtil.getLog(AnnouncerTools.class);
+    
+    /** The Constant MILLIS_PER_DAY. */
     private static final long MILLIS_PER_DAY = 86400000;
+    
+    /** The user layout pkc. */
     private static CompletedPK userLayoutPKC = new CompletedPK();
+    
+    /** The user layout pknc. */
     private static NotCompletedPK userLayoutPKNC = new NotCompletedPK();
 
+    /**
+     * Checks if is completed.
+     *
+     * @param userId the user id
+     * @param layoutPK the layout pk
+     * @return true, if is completed
+     * @throws SystemException the system exception
+     */
     private static boolean isCompleted(String userId, String layoutPK)
             throws SystemException {
         if (CompletedLocalServiceUtil.userExist(userId, layoutPK)) {
@@ -54,6 +73,14 @@ public class AnnouncerTools {
         return false;
     }
 
+    /**
+     * Checks if is not completed.
+     *
+     * @param userId the user id
+     * @param layoutPK the layout pk
+     * @return true, if is not completed
+     * @throws SystemException the system exception
+     */
     private static boolean isNotCompleted(String userId, String layoutPK)
             throws SystemException {
         if (NotCompletedLocalServiceUtil.userExist(userId, layoutPK)) {
@@ -63,6 +90,14 @@ public class AnnouncerTools {
         return false;
     }
 
+    /**
+     * Checks if is same articles set id.
+     *
+     * @param userId the user id
+     * @param layoutPK the layout pk
+     * @param articlesSetId the articles set id
+     * @return true, if is same articles set id
+     */
     private static boolean isSameArticlesSetId(String userId, String layoutPK,
             String articlesSetId) {
         try {
@@ -84,6 +119,13 @@ public class AnnouncerTools {
         return true;
     }
 
+    /**
+     * Show not completed.
+     *
+     * @param userId the user id
+     * @param layoutPK the layout pk
+     * @return true, if successful
+     */
     private static boolean showNotCompleted(String userId, String layoutPK) {
         Date currentDate = null;
         Date notCompletedDate = null;
@@ -116,6 +158,15 @@ public class AnnouncerTools {
      * shown if: userId is in Completed table, userId is in NonCompleted table
      * but it has been no longer than a day, since it was last shown to the user
      */
+    /**
+     * Show announcer.
+     *
+     * @param userId the user id
+     * @param layoutPK the layout pk
+     * @param articlesSetId the articles set id
+     * @return true, if successful
+     * @throws SystemException the system exception
+     */
     public static boolean showAnnouncer(String userId, String layoutPK,
             String articlesSetId) throws SystemException {
         if (isCompleted(userId, layoutPK)) {
@@ -137,6 +188,13 @@ public class AnnouncerTools {
         }
     }
 
+    /**
+     * Adds the to completed.
+     *
+     * @param userId the user id
+     * @param layoutPK the layout pk
+     * @param articlesSetId the articles set id
+     */
     public static void addToCompleted(String userId, String layoutPK,
             String articlesSetId) {
         userLayoutPKC.setUSER_ID(userId);
@@ -163,6 +221,13 @@ public class AnnouncerTools {
         }
     }
 
+    /**
+     * Adds the to not completed.
+     *
+     * @param userId the user id
+     * @param layoutPK the layout pk
+     * @param panelCloseDate the panel close date
+     */
     public static void addToNotCompleted(String userId, String layoutPK,
             Date panelCloseDate) {
         userLayoutPKNC.setUSER_ID(userId);
@@ -189,6 +254,12 @@ public class AnnouncerTools {
         }
     }
 
+    /**
+     * Delete completed.
+     *
+     * @param userId the user id
+     * @param layoutPK the layout pk
+     */
     private static void deleteCompleted(String userId, String layoutPK) {
         userLayoutPKC.setUSER_ID(userId);
         userLayoutPKC.setLAYOUT_PK(layoutPK);
@@ -202,6 +273,12 @@ public class AnnouncerTools {
         }
     }
 
+    /**
+     * Delete not completed.
+     *
+     * @param userId the user id
+     * @param layoutPK the layout pk
+     */
     private static void deleteNotCompleted(String userId, String layoutPK) {
         userLayoutPKNC.setUSER_ID(userId);
         userLayoutPKNC.setLAYOUT_PK(layoutPK);
@@ -215,6 +292,13 @@ public class AnnouncerTools {
         }
     }
 
+    /**
+     * Removes the article.
+     *
+     * @param pref the pref
+     * @param themeDisplay the theme display
+     * @param articleId the article id
+     */
     public static void removeArticle(PortletPreferences pref,
             ThemeDisplay themeDisplay, String articleId) {
         String articles = pref.getValue("articlesRaw", "0");
@@ -266,6 +350,10 @@ public class AnnouncerTools {
 
     /**
      * Gets a string in the form of articleId1:version,articleId2:version ...
+     *
+     * @param groupId the group id
+     * @param articleIds the article ids
+     * @return the article ids with version
      */
     public static String getArticleIdsWithVersion(long groupId,
             String articleIds) {

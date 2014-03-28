@@ -75,17 +75,20 @@ iteratorURL.setParameter("jspPage", "/html/announcer/edit.jsp");
                 className="com.liferay.portlet.journal.model.JournalArticle">
 
                 <c:set var="defaultValue" value="No" />
-                <c:if test="${ article.articleId eq defaultArticle }">
-                    <c:set var="defaultValue" value="Yes" />
-                </c:if>
 
-                <liferay-ui:search-container-column-text
-                    name="article-default" value="${defaultValue}" />
+                <c:choose>
+	                <c:when test="${ article.articleId eq defaultArticle }">
+		                <liferay-ui:search-container-column-jsp
+		                    path="/html/announcer/include/default_article_column.jsp" name="Name"/>
+                	</c:when>
+                	<c:otherwise>
+		                <liferay-ui:search-container-column-text
+		                    name="article-name"
+		                    value="${article.titleCurrentValue}"/>
+                	</c:otherwise>
+                </c:choose>
                 <liferay-ui:search-container-column-text
                     name="article-id" value="${article.articleId}" />
-                <liferay-ui:search-container-column-text
-                    name="article-name"
-                    value="${article.titleCurrentValue}" />
                 <liferay-ui:search-container-column-jsp
                     path="/html/announcer/include/announcer_actions.jsp" />
 

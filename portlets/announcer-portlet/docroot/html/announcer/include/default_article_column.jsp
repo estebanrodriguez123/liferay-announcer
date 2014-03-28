@@ -25,23 +25,6 @@
 ResultRow row = (ResultRow)request.getAttribute(com.liferay.portal.kernel.util.WebKeys.SEARCH_CONTAINER_RESULT_ROW);
 JournalArticle article = (JournalArticle)row.getObject();
 %>
-
-<portlet:actionURL name="upArticle" var="upArticleUrl">
-    <portlet:param name="articleId" value="<%=article.getArticleId()%>" />
-</portlet:actionURL>
-
-<portlet:actionURL name="downArticle" var="downArticleUrl">
-    <portlet:param name="articleId" value="<%=article.getArticleId()%>" />
-</portlet:actionURL>
-
-<portlet:actionURL name="defaultArticle" var="defaultArticleUrl">
-    <portlet:param name="articleId" value="<%=article.getArticleId()%>" />
-</portlet:actionURL>
-
-<liferay-ui:icon-menu>
-    <liferay-ui:icon image="top" message="Up" url="${upArticleUrl}" />
-    <liferay-ui:icon image="bottom" message="Down"
-        url="${downArticleUrl}" />
-    <liferay-ui:icon image="activate" message="Default Article"
-        url="${defaultArticleUrl}" />
-</liferay-ui:icon-menu>
+<span><%= article.getTitleCurrentValue() %></span>
+<liferay-ui:icon image="activate" message="Default Article"/>
+<span>(Default Article)</span>
