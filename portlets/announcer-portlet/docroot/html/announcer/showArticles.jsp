@@ -37,7 +37,9 @@ iteratorURL.setParameter("groupId", String.valueOf(groupId));
         message="added-articles-message" />
     <liferay-ui:success key="selected-articles"
         message="selected-articles-message" />
-
+	
+	<liferay-ui:message key="article-autosave-message"></liferay-ui:message>
+	
     <aui:form name="fm_add_articles" action="${addArticlesURL}"
         method="POST">
 
