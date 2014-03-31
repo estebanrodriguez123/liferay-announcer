@@ -44,11 +44,9 @@
 </c:if>
 
 <c:if test="${showAnnouncer}">
-    <script type="text/javascript">
-        AUI().ready(function() {
-            MyAnnouncerClass.displayContent('${user.uuid}',
-                    '${articleVersionId}', '${contentURL}',
-                    '${pns}');
-        });
-    </script>
+    <aui:script use="my-announcer">
+        A.MyAnnouncerClass.displayContent('${user.uuid}',
+                        '${articleVersionId}', '${contentURL}',
+                        '${pns}');
+    </aui:script>
 </c:if>

@@ -17,8 +17,8 @@
  * Boston, MA 02110-1301, USA.
  */
 
-AUI().use('aui-dialog', 'aui-io', 'aui-modal', function (A) {
-
+AUI.add('my-announcer', function (A, NAME) { 
+    
     function MyAnnouncerClass() {
         this.portletNamespace;
         this.failureMessage = new A.Modal({
@@ -151,13 +151,20 @@ AUI().use('aui-dialog', 'aui-io', 'aui-modal', function (A) {
                 method: 'POST',
                 on: {
                     failure: function () {
-                    	cb.checked= (cb.checked)? false : true;
+                        cb.checked= (cb.checked)? false : true;
                         instance.failureMessage.show();
                     }
                 }
             });
         }
     };
-
-    window.MyAnnouncerClass = new MyAnnouncerClass();
+    
+    A.MyAnnouncerClass = new MyAnnouncerClass();
+    
+}, '@VERSION@', {
+    "requires": ['aui-dialog', 'aui-io', 'aui-modal']
 });
+
+AUI().use('my-announcer', function(A) {
+    window.MyAnnouncerClass = A.MyAnnouncerClass;
+})
