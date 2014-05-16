@@ -23,22 +23,19 @@
 
 <%
     String articles = renderRequest.getPreferences().getValue("articleId", "0");
+    String[] articlesArray = StringUtil.split(articles, ",");
 %>
 
 <div id="<portlet:namespace />articles" class="announcer-articles">
-    <%
-        for (String article : StringUtil.split(articles, ",")) {
-    %>
-    <div class="aui-carousel-item">
-        <div class="aui-carousel-item-content">
-            <liferay-ui:journal-article
-                groupId="<%=themeDisplay.getScopeGroupId()%>"
-                articleId="<%=article%>" />
-        </div>
-    </div>
-    <%
-        }
-    %>
+    <c:forEach items="<%= articlesArray%>" var="article">
+	    <div class="aui-carousel-item">
+	        <div class="aui-carousel-item-content">
+	            <liferay-ui:journal-article
+	                groupId="<%=themeDisplay.getScopeGroupId()%>"
+	                articleId="${article}" />
+	        </div>
+	    </div>
+    </c:forEach>
 </div>
 
 <script type="text/javascript">
@@ -54,8 +51,6 @@ AUI().ready('aui-carousel','node','event', function(A) {
     var newNext = A.Node.create('<button type="button" class="next">Next</button>');
     var portletId = '<%=portletId%>';
     window.parent.setPortletId(portletId);
-    carouselNode.prepend(newNext);
-    carouselNode.prepend(newPrev);
     
     newNext.on('click', function(e) {
         if (A.one('.carousel-menu-active').get("text") != (A.all('.carousel-menu-index').size() - 1).toString()) {
@@ -71,5 +66,11 @@ AUI().ready('aui-carousel','node','event', function(A) {
             carousel.prev();
         }
     });
+    if (A.one('.carousel-menu-active').get("text") == (A.all('.carousel-menu-index').size() - 1).toString()) {
+        window.parent.MyAnnouncerClass.showAnnouncerCloseBtn('${pns}');
+    } else {
+	    carouselNode.prepend(newNext);
+	    carouselNode.prepend(newPrev);
+    }
 });
 </script>
