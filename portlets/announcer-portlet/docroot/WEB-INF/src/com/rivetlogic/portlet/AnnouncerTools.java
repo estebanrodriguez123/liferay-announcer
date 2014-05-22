@@ -19,6 +19,13 @@
 
 package com.rivetlogic.portlet;
 
+import java.io.IOException;
+import java.util.Date;
+
+import javax.portlet.PortletPreferences;
+import javax.portlet.ReadOnlyException;
+import javax.portlet.ValidatorException;
+
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
@@ -31,13 +38,6 @@ import com.rivetlogic.portlet.service.CompletedLocalServiceUtil;
 import com.rivetlogic.portlet.service.NotCompletedLocalServiceUtil;
 import com.rivetlogic.portlet.service.persistence.CompletedPK;
 import com.rivetlogic.portlet.service.persistence.NotCompletedPK;
-
-import javax.portlet.PortletPreferences;
-import javax.portlet.ReadOnlyException;
-import javax.portlet.ValidatorException;
-
-import java.io.IOException;
-import java.util.Date;
 
 /**
  * The Class AnnouncerTools.
@@ -302,13 +302,11 @@ public class AnnouncerTools {
     public static void removeArticle(PortletPreferences pref,
             ThemeDisplay themeDisplay, String articleId) {
         String articles = pref.getValue("articlesRaw", "0");
-        System.out.println(articles);
 
         articles = articles.replace(String.valueOf(articleId), ""); // remove id
         articles = articles.replaceAll("\\s+", " ");
 
         String articleIds = articles.trim().replaceAll("\\s", ",");
-        System.out.println(articleIds);
 
         String articleWithVersionPref = "0";
         String articleConsecutive = "0";
@@ -376,5 +374,20 @@ public class AnnouncerTools {
         }
         articleWithVersionBuilder.deleteCharAt(0); // remove the initial comma
         return articleWithVersionBuilder.toString();
+    }
+    /**
+     * Verify if the specified web content article exists.
+     * @param groupId
+     * @param articleId
+     * @return Returns true if the specified web content article exists.
+     */
+    public static boolean isArticle(long groupId, String articleId) {
+        boolean exist = false;
+        try {
+            exist = JournalArticleLocalServiceUtil.hasArticle(groupId, articleId);
+        } catch (SystemException e) {
+            LOG.error(e);
+        }
+        return exist;
     }
 }

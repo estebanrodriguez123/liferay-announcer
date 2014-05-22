@@ -37,6 +37,7 @@ import javax.portlet.RenderResponse;
 import javax.portlet.ResourceRequest;
 import javax.portlet.ResourceResponse;
 import javax.portlet.ValidatorException;
+import javax.servlet.http.HttpServletRequest;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
@@ -46,6 +47,7 @@ import com.liferay.portal.kernel.servlet.SessionMessages;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.theme.ThemeDisplay;
+import com.liferay.portal.util.PortalUtil;
 import com.liferay.portlet.journal.service.JournalArticleLocalServiceUtil;
 import com.liferay.util.bridges.mvc.MVCPortlet;
 
@@ -84,7 +86,6 @@ public class AnnouncerPortlet extends MVCPortlet {
     @Override
     public void doView(RenderRequest request, RenderResponse response)
             throws IOException, PortletException {
-
         ThemeDisplay themeDisplay = (ThemeDisplay) request
                 .getAttribute(WebKeys.THEME_DISPLAY);
         long groupId = themeDisplay.getScopeGroupId();
@@ -103,15 +104,19 @@ public class AnnouncerPortlet extends MVCPortlet {
                 for (String articleId : articleIds.split(ARTICLE_SELECTION_DELIMITER)) {
                     double version;
                     try {
-                        version = JournalArticleLocalServiceUtil
-                                .getLatestVersion(groupId, articleId);
-                        articleWithVersionBuilder.append(articleId);
-                        articleWithVersionBuilder.append(":");
-                        articleWithVersionBuilder.append(version);
-                        if (!articleWithVersionBuilder.toString().equals(
-                                articleIdsWithVersion)) {
-                            articleVersionId = String.valueOf(Integer
-                                    .valueOf(articleVersionId) + 1);
+                        if(AnnouncerTools.isArticle(groupId, articleId)) {
+                            version = JournalArticleLocalServiceUtil
+                                    .getLatestVersion(groupId, articleId);
+                            articleWithVersionBuilder.append(articleId);
+                            articleWithVersionBuilder.append(":");
+                            articleWithVersionBuilder.append(version);
+                            if (!articleWithVersionBuilder.toString().equals(
+                                    articleIdsWithVersion)) {
+                                articleVersionId = String.valueOf(Integer
+                                        .valueOf(articleVersionId) + 1);
+                            }
+                        } else {
+                            AnnouncerTools.removeArticle(preferences, themeDisplay, articleId);
                         }
                     } catch (PortalException e) {
                         LOG.error(e);
@@ -313,22 +318,26 @@ public class AnnouncerPortlet extends MVCPortlet {
                 .getAttribute(WebKeys.THEME_DISPLAY);
         String layoutPK = String.valueOf(themeDisplay.getLayout()
                 .getPrimaryKey());
+        
+        HttpServletRequest servletRequest = PortalUtil.getOriginalServletRequest(PortalUtil.getHttpServletRequest(request));
 
-        String action = ParamUtil.getString(request, "cmd");
+        String action = servletRequest.getParameter("cmd");
+
         if (action.equals("NOTCOMPLETED")) {
-            String userId = ParamUtil.getString(request, "userId");
+            String userId = servletRequest.getParameter("userId");
             Date currentDate = new Date();
 
             AnnouncerTools.addToNotCompleted(userId, layoutPK, currentDate);
+            
         } else if (action.equals("COMPLETED")) {
-            String userId = ParamUtil.getString(request, "userId");
-            String articleSerial = ParamUtil
-                    .getString(request, "articleSerial");
+            String userId = servletRequest.getParameter("userId");
+            String articleSerial = servletRequest.getParameter("articleSerial");
 
             AnnouncerTools.addToCompleted(userId, layoutPK, articleSerial);
+            
         } else if ("UPDATE-ARTICLE-SELECTION".equalsIgnoreCase(action)){
         	
-        	String articleId = ParamUtil.getString(request, "articleId");
+        	String articleId = servletRequest.getParameter("articleId");
         	updateArticleSelection(request, response, articleId);
         } 
 
