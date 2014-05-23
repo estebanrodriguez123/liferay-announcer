@@ -35,11 +35,13 @@ AUI.add('my-announcer', function (A, NAME) {
         
         failureMessage: null,    
         
-        displayContent: function (uuid, articleVersionId, url, pns) {
+        displayContent: function (groupId, uuid, articleVersionId, url, pns, closeURL,articlesArrayIds) {
             var instance = this;
             var title = "Announcer";
             var tipModal = null;
-            var portletId = null;
+            var currentId = 0;
+            var articlesIdLength = articlesArrayIds.length;
+            var currentUrl;
 
             Liferay.Util.openWindow({
                 dialog: {
@@ -52,11 +54,52 @@ AUI.add('my-announcer', function (A, NAME) {
                 },
                 id: 'announcer-iframe',
                 title: title,
-                uri: url
+                uri: url + "&articleId=" + articlesArrayIds[currentId]
             }, function (modal) {
                 this.portletNamespace = pns;
                 tipModal = modal;
                 tipModal.addToolbar([
+                    {
+                        label: 'Previous',
+                        id: this.portletNamespace + 'previous-announcer',
+                        cssClass: 'previous-announcer',
+                        on: {
+                            click: function () {
+                            	if(currentId > 0) {
+                            		currentId--;
+                            		currentUrl = url + "&articleId=" + articlesArrayIds[currentId];
+                            		tipModal.get('boundingBox').one('iframe').setAttribute('src', currentUrl);
+                            	}
+                            	if(currentId == 0) {
+                            		tipModal.get('boundingBox').one('.previous-announcer').set('disabled','disabled');
+                            	}
+                            	if(currentId < (articlesIdLength-1)) {
+                            		tipModal.get('boundingBox').one('.next-announcer').set('disabled', false);
+                            	}
+                            }
+                        }
+                    },
+                    {
+                        label: 'Next',
+                        id: this.portletNamespace + 'next-announcer',
+                        cssClass: 'next-announcer',
+                        on: {
+                            click: function () {
+                            	if(currentId < (articlesIdLength-1)) {
+                            		currentId++;
+                            		currentUrl = url + "&articleId=" + articlesArrayIds[currentId];
+                            		tipModal.get('boundingBox').one('iframe').setAttribute('src', currentUrl);
+                            	}
+                            	if(currentId == (articlesIdLength-1)) {
+                            		tipModal.get('boundingBox').one('.next-announcer').set('disabled','disabled');
+                            		tipModal.get('boundingBox').one('.close-announcer').set('disabled', false);
+                            	}
+                            	if(currentId > 0) {
+                            		tipModal.get('boundingBox').one('.previous-announcer').set('disabled', false);
+                            	}
+                            }
+                        }
+                    },
                     {
                         label: 'Close',
                         id: this.portletNamespace + 'close-announcer',
@@ -64,34 +107,40 @@ AUI.add('my-announcer', function (A, NAME) {
                         on: {
                             click: function () {
                                 /*Ajax call to change user preference about displaying the pop up*/
-                                var resourceURL = Liferay.PortletURL.createResourceURL();
-                                resourceURL.setPortletId(portletId);
-                                resourceURL.setParameter('cmd', 'COMPLETED');
-                                resourceURL.setParameter('userId', uuid);
-                                resourceURL.setParameter('articleSerial', articleVersionId);
-                                A.io(resourceURL.toString(), {
+                                A.io.request(closeURL, {
                                     method: 'POST',
+                                    data: {
+                                    	cmd: 'COMPLETED',
+                                    	userId: uuid,
+                                    	articleSerial: articleVersionId
+                                    },
                                     on: {
                                         failure: function () {
                                             instance.failureMessage.show();
+                                        },
+                                        success: function() {
+                                        	modal.destroy();
                                         }
                                     }
                                 });
-                                modal.destroy();
                             }
                         },
                         primary: true
                     }
                 ]);
+                if(currentId == 0) {
+                	tipModal.get('boundingBox').one('.previous-announcer').set('disabled','disabled');
+                }
+                tipModal.get('boundingBox').one('.close-announcer').set('disabled','disabled');
                 tipModal.on(
                     'visibleChange', function () {
                     /*Ajax call to change user preference about displaying the pop up*/
-                    var resourceURL = Liferay.PortletURL.createResourceURL();
-                    resourceURL.setPortletId(portletId);
-                    resourceURL.setParameter('cmd', 'NOTCOMPLETED');
-                    resourceURL.setParameter('userId', uuid);
-                    A.io(resourceURL.toString(), {
+                    A.io.request(closeURL, {
                         method: 'POST',
+                        data: {
+                        	cmd: 'NOTCOMPLETED',
+                        	userId: uuid
+                        },
                         on: {
                             failure: function () {
                                 instance.failureMessage.show();
@@ -135,20 +184,14 @@ AUI.add('my-announcer', function (A, NAME) {
             });
         },
 
-        showAnnouncerCloseBtn: function (pns) {
-            this.portletNamespace = pns;
-            var nodeObject = A.one('#' + this.portletNamespace + 'close-announcer');
-            nodeObject.setStyle('visibility', 'visible');
-        },
-
-        handleClick: function (articleId, portletId, cb) {
+        handleClick: function (articleId, portletId, cb, closeURL) {
             var instance = this;
-            var articleSelectionURL = Liferay.PortletURL.createResourceURL();
-            articleSelectionURL.setPortletId(portletId);
-            articleSelectionURL.setParameter('cmd', 'UPDATE-ARTICLE-SELECTION');
-            articleSelectionURL.setParameter('articleId', articleId);
-            A.io(articleSelectionURL.toString(), {
+            A.io.request(closeURL, {
                 method: 'POST',
+                data:{
+                	cmd: 'UPDATE-ARTICLE-SELECTION',
+                	articleId: articleId
+                },
                 on: {
                     failure: function () {
                         cb.checked= (cb.checked)? false : true;
@@ -167,4 +210,4 @@ AUI.add('my-announcer', function (A, NAME) {
 
 AUI().use('my-announcer', function(A) {
     window.MyAnnouncerClass = A.MyAnnouncerClass;
-})
+});

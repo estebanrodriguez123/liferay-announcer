@@ -29,8 +29,8 @@ iteratorURL.setParameter("jspPage", "/html/announcer/showArticles.jsp");
 iteratorURL.setParameter("groupId", String.valueOf(groupId));
 %>
 
-<portlet:actionURL name="addArticles" var="addArticlesURL">
-</portlet:actionURL>
+<portlet:resourceURL var="closeURL"/>
+<portlet:actionURL name="addArticles" var="addArticlesURL"/>
 <div id="<portlet:namespace />container">
 
     <liferay-ui:success key="added-articles"
@@ -69,11 +69,11 @@ iteratorURL.setParameter("groupId", String.valueOf(groupId));
 			        <c:choose>
 			        	<c:when test="${  rf:arrContains( addedArticleIds, content.articleId ) }">
 		                    <input type="checkbox" name="selectArticleCheckBox" id="selectArticleCheckBox" checked="checked" 
-		                        onchange="MyAnnouncerClass.handleClick('${content.articleId}', '<%= portletId %>', this)" />
+		                        onchange="MyAnnouncerClass.handleClick('${content.articleId}', '<%= portletId %>', this, '${closeURL}')" />
 			        	</c:when>
 			        	<c:otherwise>
 		                    <input type="checkbox" name="selectArticleCheckBox" id="selectArticleCheckBox"
-		                        onchange="MyAnnouncerClass.handleClick('${content.articleId}', '<%= portletId %>', this)" />
+		                        onchange="MyAnnouncerClass.handleClick('${content.articleId}', '<%= portletId %>', this, '${closeURL}')" />
 			        	</c:otherwise>
 			        </c:choose>
                 </liferay-ui:search-container-column-text>

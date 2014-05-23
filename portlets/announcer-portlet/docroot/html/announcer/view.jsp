@@ -21,10 +21,18 @@
 
 <%@include file="/html/init.jsp"%>
 
+<%
+    String articles = renderRequest.getPreferences().getValue("articleId", "0");
+    long groupId = themeDisplay.getScopeGroupId();
+    
+%>
+<c:set var="articlesIds" value="<%= articles %>"></c:set>
+<c:set var="groupId" value="<%= groupId %>"></c:set>
 <portlet:renderURL var="contentURL"
     windowState="<%= LiferayWindowState.POP_UP.toString() %>">
     <portlet:param name="jspPage" value="/html/announcer/content.jsp" />
 </portlet:renderURL>
+<portlet:resourceURL var="closeURL"/>
 
 <c:if test="${ defaultArticle != '0' }">
     <div class="default-article">
@@ -37,7 +45,7 @@
             <aui:button-row>
                 <aui:button type="button" cssClass="btn-primary"
                     value="announcer-launch"
-                    onClick="MyAnnouncerClass.displayContent('${user.uuid}','${articleVersionId}','${contentURL}','${pns}')" />
+                    onClick="MyAnnouncerClass.displayContent(${groupId},'${user.uuid}','${articleVersionId}','${contentURL}','${pns}', '${closeURL}',[${articlesIds}])" />
             </aui:button-row>
         </aui:fieldset>
     </c:if>
@@ -45,8 +53,8 @@
 
 <c:if test="${showAnnouncer}">
     <aui:script use="my-announcer">
-        A.MyAnnouncerClass.displayContent('${user.uuid}',
+        A.MyAnnouncerClass.displayContent(${groupId},'${user.uuid}',
                         '${articleVersionId}', '${contentURL}',
-                        '${pns}');
+                        '${pns}', '${closeURL}', [${articlesIds}]);
     </aui:script>
 </c:if>

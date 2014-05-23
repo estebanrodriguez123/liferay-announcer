@@ -22,55 +22,11 @@
 <%@include file="/html/init.jsp"%>
 
 <%
-    String articles = renderRequest.getPreferences().getValue("articleId", "0");
-    String[] articlesArray = StringUtil.split(articles, ",");
+	String articleId = PortalUtil.getOriginalServletRequest(PortalUtil.getHttpServletRequest(renderRequest)).getParameter("articleId");
 %>
-
 <div id="<portlet:namespace />articles" class="announcer-articles">
-    <c:forEach items="<%= articlesArray%>" var="article">
-	    <div class="aui-carousel-item">
-	        <div class="aui-carousel-item-content">
 	            <liferay-ui:journal-article
 	                groupId="<%=themeDisplay.getScopeGroupId()%>"
-	                articleId="${article}" />
-	        </div>
-	    </div>
-    </c:forEach>
+	                articleId="<%= articleId %>" />
 </div>
 
-<script type="text/javascript">
-AUI().ready('aui-carousel','node','event', function(A) {
-   var carousel=new A.Carousel({
-        contentBox : '#<portlet:namespace />articles',
-        height : 450,
-        playing: false
-    }).render();
-    
-    var carouselNode = A.one('#<portlet:namespace />articles');
-    var newPrev = A.Node.create('<button type="button" class="prev">Previous</button>');
-    var newNext = A.Node.create('<button type="button" class="next">Next</button>');
-    var portletId = '<%=portletId%>';
-    window.parent.setPortletId(portletId);
-    
-    newNext.on('click', function(e) {
-        if (A.one('.carousel-menu-active').get("text") != (A.all('.carousel-menu-index').size() - 1).toString()) {
-            carousel.next();
-        }
-        if (A.one('.carousel-menu-active').get("text") == (A.all('.carousel-menu-index').size() - 1).toString()) {
-            window.parent.MyAnnouncerClass.showAnnouncerCloseBtn('${pns}');
-        }
-    });
-    
-    newPrev.on('click', function(e) {
-        if (A.one('.carousel-menu-active').get("text") != '0') {
-            carousel.prev();
-        }
-    });
-    if (A.one('.carousel-menu-active').get("text") == (A.all('.carousel-menu-index').size() - 1).toString()) {
-        window.parent.MyAnnouncerClass.showAnnouncerCloseBtn('${pns}');
-    } else {
-	    carouselNode.prepend(newNext);
-	    carouselNode.prepend(newPrev);
-    }
-});
-</script>
