@@ -45,7 +45,7 @@
             <aui:button-row>
                 <aui:button type="button" cssClass="btn-primary"
                     value="announcer-launch"
-                    onClick="MyAnnouncerClass.displayContent(${groupId},'${user.uuid}','${articleVersionId}','${contentURL}','${pns}', '${closeURL}',[${articlesIds}])" />
+                    onClick="MyAnnouncerClass.displayContent(${groupId},'${user.uuid}','${articleVersionId}','${contentURL}','${pns}', '${closeURL}','${articlesIds}'.split(','))" />
             </aui:button-row>
         </aui:fieldset>
     </c:if>
@@ -55,6 +55,6 @@
     <aui:script use="my-announcer">
         A.MyAnnouncerClass.displayContent(${groupId},'${user.uuid}',
                         '${articleVersionId}', '${contentURL}',
-                        '${pns}', '${closeURL}', [${articlesIds}]);
+                        '${pns}', '${closeURL}', '${articlesIds}'.split(','));
     </aui:script>
 </c:if>

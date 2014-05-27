@@ -131,7 +131,13 @@ AUI.add('my-announcer', function (A, NAME) {
                 if(currentId == 0) {
                 	tipModal.get('boundingBox').one('.previous-announcer').set('disabled','disabled');
                 }
-                tipModal.get('boundingBox').one('.close-announcer').set('disabled','disabled');
+                if(articlesIdLength == 1) {
+                	tipModal.get('boundingBox').one('.next-announcer').set('disabled', 'disabled');
+                	tipModal.get('boundingBox').one('.close-announcer').set('disabled',false);
+                } else {
+                	tipModal.get('boundingBox').one('.close-announcer').set('disabled','disabled');
+                }
+                
                 tipModal.on(
                     'visibleChange', function () {
                     /*Ajax call to change user preference about displaying the pop up*/
