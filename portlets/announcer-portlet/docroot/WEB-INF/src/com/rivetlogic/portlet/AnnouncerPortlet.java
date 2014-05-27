@@ -66,6 +66,30 @@ public class AnnouncerPortlet extends MVCPortlet {
     /** The Constant LR_EMPTY_VALUE. */
     private static final String LR_EMPTY_VALUE = "0";
     
+    /** Constants */
+    private static final String DEFAULT_ARTICLE= "defaultArticle";
+    private static final String ARTICLE_ID = "articleId";
+    private static final String ADDED_ARTICLE_IDS = "addedArticleIds";
+    private static final String ARTICLE_ID_CONSECUTIVE = "articleIdConsecutive";
+    private static final String ARTICLE_ID_WITH_VERSION = "articleIdWithVersion";
+    private static final String ARTICLE_VERSION_ID = "articleVersionId";
+    private static final String GROUP_ID = "groupId";
+    private static final String SHOW_ANNOUNCER = "showAnnouncer";
+    private static final String SIGNED_IN = "signedIn";
+    private static final String IDS = "ids";
+    private static final String ARTICLE_DEAFULT = "article-default";
+    private static final String ARTICLE_UP_DOWN = "article-up-down";
+    private static final String CMD = "cmd";
+    private static final String USER_ID = "userId";
+    private static final String COMPLETED = "COMPLETED";
+    private static final String NOTCOMPLETED = "NOTCOMPLETED";
+    private static final String ARTICLE_RAW = "articleRaw";
+    private static final String ARTICLE_SERIAL = "articleSerial";
+    private static final String ARTICLES = "articles";
+    private static final String UPDATE_ARTICLE_SELECTION = "UPDATE-ARTICLE-SELECTION";
+    private static final String EDIT_URL = "/html/announcer/edit.jsp";
+    
+    
     /* (non-Javadoc)
      * @see javax.portlet.GenericPortlet#render(javax.portlet.RenderRequest, javax.portlet.RenderResponse)
      */
@@ -73,10 +97,10 @@ public class AnnouncerPortlet extends MVCPortlet {
     public void render(RenderRequest request, RenderResponse response) throws PortletException, IOException{
     	
     	PortletPreferences preferences = request.getPreferences();
-        String defaultArticle = preferences.getValue("defaultArticle", LR_EMPTY_VALUE);
-        String[] addedArticleIds = preferences.getValue("articleId", LR_EMPTY_VALUE).split(ARTICLE_SELECTION_DELIMITER);
-        request.setAttribute("defaultArticle", defaultArticle);
-        request.setAttribute("addedArticleIds", addedArticleIds);
+        String defaultArticle = preferences.getValue(DEFAULT_ARTICLE, LR_EMPTY_VALUE);
+        String[] addedArticleIds = preferences.getValue(ARTICLE_ID, LR_EMPTY_VALUE).split(ARTICLE_SELECTION_DELIMITER);
+        request.setAttribute(DEFAULT_ARTICLE, defaultArticle);
+        request.setAttribute(ADDED_ARTICLE_IDS, addedArticleIds);
     	super.render(request, response);
     }
     
@@ -94,10 +118,10 @@ public class AnnouncerPortlet extends MVCPortlet {
         boolean showAnnouncer = false;
         if (themeDisplay.isSignedIn()) {
             String articleVersionId = preferences.getValue(
-                    "articleIdConsecutive", LR_EMPTY_VALUE);
-            String articleIds = preferences.getValue("articleId", LR_EMPTY_VALUE);
+                    ARTICLE_ID_CONSECUTIVE, LR_EMPTY_VALUE);
+            String articleIds = preferences.getValue(ARTICLE_ID, LR_EMPTY_VALUE);
             String articleIdsWithVersion = preferences.getValue(
-                    "articleIdWithVersion", LR_EMPTY_VALUE);
+                    ARTICLE_ID_WITH_VERSION, LR_EMPTY_VALUE);
 
             StringBuilder articleWithVersionBuilder = new StringBuilder();
             if (!articleIds.equals(LR_EMPTY_VALUE)) {
@@ -131,17 +155,17 @@ public class AnnouncerPortlet extends MVCPortlet {
                     showAnnouncer = AnnouncerTools.showAnnouncer(themeDisplay
                             .getRealUser().getUuid(), layoutPK,
                             articleVersionId);
-                    request.setAttribute("articleVersionId", articleVersionId);
+                    request.setAttribute(ARTICLE_VERSION_ID, articleVersionId);
                 } catch (SystemException e) {
                     LOG.error(e);
                 }
             }
         }
-        request.setAttribute("groupId", groupId);
-        request.setAttribute("showAnnouncer", showAnnouncer);
-        request.setAttribute("signedIn", themeDisplay.isSignedIn());
-        String defaultArticle = preferences.getValue("defaultArticle", LR_EMPTY_VALUE);
-        request.setAttribute("defaultArticle", defaultArticle);
+        request.setAttribute(GROUP_ID, groupId);
+        request.setAttribute(SHOW_ANNOUNCER, showAnnouncer);
+        request.setAttribute(SIGNED_IN, themeDisplay.isSignedIn());
+        String defaultArticle = preferences.getValue(DEFAULT_ARTICLE, LR_EMPTY_VALUE);
+        request.setAttribute(DEFAULT_ARTICLE, defaultArticle);
 
         super.doView(request, response);
     }
@@ -156,13 +180,13 @@ public class AnnouncerPortlet extends MVCPortlet {
         ThemeDisplay themeDisplay = (ThemeDisplay) request
                 .getAttribute(WebKeys.THEME_DISPLAY);
         long groupId = themeDisplay.getScopeGroupId();
-        request.setAttribute("groupId", groupId);
+        request.setAttribute(GROUP_ID, groupId);
 
         PortletPreferences preferences = request.getPreferences();
-        String[] ids = preferences.getValue("articleId", LR_EMPTY_VALUE).split(ARTICLE_SELECTION_DELIMITER);
-        String defaultArticle = preferences.getValue("defaultArticle", LR_EMPTY_VALUE);
-        request.setAttribute("defaultArticle", defaultArticle);
-        request.setAttribute("ids", ids);
+        String[] ids = preferences.getValue(ARTICLE_ID, LR_EMPTY_VALUE).split(ARTICLE_SELECTION_DELIMITER);
+        String defaultArticle = preferences.getValue(DEFAULT_ARTICLE, LR_EMPTY_VALUE);
+        request.setAttribute(DEFAULT_ARTICLE, defaultArticle);
+        request.setAttribute(IDS, ids);
 
         super.doEdit(request, response);
     }
@@ -174,10 +198,10 @@ public class AnnouncerPortlet extends MVCPortlet {
      * @param response the response
      */
     public void defaultArticle(ActionRequest request, ActionResponse response) {
-        String defaultArticle = ParamUtil.getString(request, "articleId");
+        String defaultArticle = ParamUtil.getString(request, ARTICLE_ID);
         PortletPreferences preferences = request.getPreferences();
         try {
-            preferences.setValue("defaultArticle", defaultArticle);
+            preferences.setValue(DEFAULT_ARTICLE, defaultArticle);
             preferences.store();
         } catch (ReadOnlyException e) {
             LOG.error(e);
@@ -186,7 +210,7 @@ public class AnnouncerPortlet extends MVCPortlet {
         } catch (IOException e) {
             LOG.error(e);
         }
-        SessionMessages.add(request, "article-default");
+        SessionMessages.add(request, ARTICLE_DEAFULT);
     }
 
     /**
@@ -206,12 +230,12 @@ public class AnnouncerPortlet extends MVCPortlet {
         ThemeDisplay themeDisplay = (ThemeDisplay) request
                 .getAttribute(WebKeys.THEME_DISPLAY);
         long groupId = themeDisplay.getScopeGroupId();
-        request.setAttribute("groupId", groupId);
+        request.setAttribute(GROUP_ID, groupId);
 
-        String articleId = ParamUtil.getString(request, "articleId");
+        String articleId = ParamUtil.getString(request, ARTICLE_ID);
         PortletPreferences preferences = request.getPreferences();
 
-        String[] ids = preferences.getValue("articleId", LR_EMPTY_VALUE).split(ARTICLE_SELECTION_DELIMITER);
+        String[] ids = preferences.getValue(ARTICLE_ID, LR_EMPTY_VALUE).split(ARTICLE_SELECTION_DELIMITER);
         List<String> currentArticles = new ArrayList<String>();
         for (int i = 0; i < ids.length; i++) {
             currentArticles.add(ids[i]);
@@ -228,15 +252,15 @@ public class AnnouncerPortlet extends MVCPortlet {
         }
 
         updatePreferences(request, response, articlesRaw);
-        ids = preferences.getValue("articleId", LR_EMPTY_VALUE).split(ARTICLE_SELECTION_DELIMITER);
-        request.setAttribute("ids", ids);
+        ids = preferences.getValue(ARTICLE_ID, LR_EMPTY_VALUE).split(ARTICLE_SELECTION_DELIMITER);
+        request.setAttribute(IDS, ids);
         
-        String defaultArticle = preferences.getValue("defaultArticle", LR_EMPTY_VALUE);
-        request.setAttribute("defaultArticle", defaultArticle);
+        String defaultArticle = preferences.getValue(DEFAULT_ARTICLE, LR_EMPTY_VALUE);
+        request.setAttribute(DEFAULT_ARTICLE, defaultArticle);
 
-        SessionMessages.add(request, "article-up-down");
+        SessionMessages.add(request, ARTICLE_UP_DOWN);
 
-        response.setRenderParameter("jspPage", "/html/announcer/edit.jsp");
+        response.setRenderParameter("jspPage", EDIT_URL);
     }
 
     /**
@@ -256,12 +280,12 @@ public class AnnouncerPortlet extends MVCPortlet {
         ThemeDisplay themeDisplay = (ThemeDisplay) request
                 .getAttribute(WebKeys.THEME_DISPLAY);
         long groupId = themeDisplay.getScopeGroupId();
-        request.setAttribute("groupId", groupId);
+        request.setAttribute(GROUP_ID, groupId);
 
-        String articleId = ParamUtil.getString(request, "articleId");
+        String articleId = ParamUtil.getString(request, ARTICLE_ID);
         PortletPreferences preferences = request.getPreferences();
 
-        String[] ids = preferences.getValue("articleId", LR_EMPTY_VALUE).split(ARTICLE_SELECTION_DELIMITER);
+        String[] ids = preferences.getValue(ARTICLE_ID, LR_EMPTY_VALUE).split(ARTICLE_SELECTION_DELIMITER);
         List<String> currentArticles = new ArrayList<String>();
         for (int i = 0; i < ids.length; i++) {
             currentArticles.add(ids[i]);
@@ -278,15 +302,15 @@ public class AnnouncerPortlet extends MVCPortlet {
         }
 
         updatePreferences(request, response, articlesRaw);
-        ids = preferences.getValue("articleId", LR_EMPTY_VALUE).split(ARTICLE_SELECTION_DELIMITER);
-        request.setAttribute("ids", ids);
+        ids = preferences.getValue(ARTICLE_ID, LR_EMPTY_VALUE).split(ARTICLE_SELECTION_DELIMITER);
+        request.setAttribute(IDS, ids);
 
-        String defaultArticle = preferences.getValue("defaultArticle", LR_EMPTY_VALUE);
-        request.setAttribute("defaultArticle", defaultArticle);
+        String defaultArticle = preferences.getValue(DEFAULT_ARTICLE, LR_EMPTY_VALUE);
+        request.setAttribute(DEFAULT_ARTICLE, defaultArticle);
 
-        SessionMessages.add(request, "article-up-down");
+        SessionMessages.add(request, ARTICLE_UP_DOWN);
 
-        response.setRenderParameter("jspPage", "/html/announcer/edit.jsp");
+        response.setRenderParameter("jspPage", EDIT_URL);
     }
 
     /**
@@ -303,7 +327,7 @@ public class AnnouncerPortlet extends MVCPortlet {
             throws PortletException, IOException, PortalException,
             SystemException {
 
-        String articles = ParamUtil.getString(request, "articles");
+        String articles = ParamUtil.getString(request, ARTICLES);
         updatePreferences(request, response, articles);
     }
 
@@ -321,23 +345,23 @@ public class AnnouncerPortlet extends MVCPortlet {
         
         HttpServletRequest servletRequest = PortalUtil.getOriginalServletRequest(PortalUtil.getHttpServletRequest(request));
 
-        String action = servletRequest.getParameter("cmd");
+        String action = servletRequest.getParameter(CMD);
 
-        if (action.equals("NOTCOMPLETED")) {
-            String userId = servletRequest.getParameter("userId");
+        if (action.equals(NOTCOMPLETED)) {
+            String userId = servletRequest.getParameter(USER_ID);
             Date currentDate = new Date();
 
             AnnouncerTools.addToNotCompleted(userId, layoutPK, currentDate);
             
-        } else if (action.equals("COMPLETED")) {
-            String userId = servletRequest.getParameter("userId");
-            String articleSerial = servletRequest.getParameter("articleSerial");
+        } else if (action.equals(COMPLETED)) {
+            String userId = servletRequest.getParameter(USER_ID);
+            String articleSerial = servletRequest.getParameter(ARTICLE_SERIAL);
 
             AnnouncerTools.addToCompleted(userId, layoutPK, articleSerial);
             
-        } else if ("UPDATE-ARTICLE-SELECTION".equalsIgnoreCase(action)){
+        } else if (UPDATE_ARTICLE_SELECTION.equalsIgnoreCase(action)){
         	
-        	String articleId = servletRequest.getParameter("articleId");
+        	String articleId = servletRequest.getParameter(ARTICLE_ID);
         	updateArticleSelection(request, response, articleId);
         } 
 
@@ -357,7 +381,7 @@ public class AnnouncerPortlet extends MVCPortlet {
             throws PortletException, IOException {
 
         PortletPreferences preferences = request.getPreferences();
-        String articlesStr = preferences.getValue("articleId", LR_EMPTY_VALUE);
+        String articlesStr = preferences.getValue(ARTICLE_ID, LR_EMPTY_VALUE);
         String[] articlesSelected; 
         if(LR_EMPTY_VALUE.equalsIgnoreCase(articlesStr)){
         	articlesSelected = new String[1];
@@ -365,7 +389,7 @@ public class AnnouncerPortlet extends MVCPortlet {
         } else {
         	articlesSelected = articlesStr.split(ARTICLE_SELECTION_DELIMITER);
         }
-        String defaultArticle = preferences.getValue("defaultArticle", LR_EMPTY_VALUE);
+        String defaultArticle = preferences.getValue(DEFAULT_ARTICLE, LR_EMPTY_VALUE);
         StringBuilder updatedArticleSelection = new StringBuilder();
 
     	boolean isDeleted = false;
@@ -375,7 +399,7 @@ public class AnnouncerPortlet extends MVCPortlet {
     			 articlesSelected[i] = LR_EMPTY_VALUE;
     			 isDeleted = true;
     			 if (defaultArticle.equalsIgnoreCase(articleId)) {
-    				 preferences.setValue("defaultArticle", LR_EMPTY_VALUE);
+    				 preferences.setValue(DEFAULT_ARTICLE, LR_EMPTY_VALUE);
     				 preferences.store();
     			 }
     			 break;
@@ -385,7 +409,7 @@ public class AnnouncerPortlet extends MVCPortlet {
     	//Now iterate over the array to form the string
     	for (int j = 0; j < articlesSelected.length; j++) {
     		if((articlesSelected[j] != LR_EMPTY_VALUE) && !("".equalsIgnoreCase(articlesSelected[j]))){
-    			updatedArticleSelection.append(articlesSelected[j]);
+    		    updatedArticleSelection.append(articlesSelected[j]);
     			updatedArticleSelection.append(" ");
     		}
     	}
@@ -419,13 +443,13 @@ public class AnnouncerPortlet extends MVCPortlet {
         String articleWithVersion = LR_EMPTY_VALUE;
         if (!articleIds.equals(LR_EMPTY_VALUE)) {
             articleWithVersionPref = preferences.getValue(
-                    "articleIdWithVersion", LR_EMPTY_VALUE); // articleId1:version ...
-            articleConsecutive = preferences.getValue("articleIdConsecutive",
+                    ARTICLE_ID_WITH_VERSION, LR_EMPTY_VALUE); // articleId1:version ...
+            articleConsecutive = preferences.getValue(ARTICLE_ID_CONSECUTIVE,
                     LR_EMPTY_VALUE);
 
             boolean updatedArticleIds = false, updatedArticleVersions = false;
 
-            updatedArticleIds = !preferences.getValue("articleId", LR_EMPTY_VALUE).equals(
+            updatedArticleIds = !preferences.getValue(ARTICLE_ID, LR_EMPTY_VALUE).equals(
                     articleIds);
 
             ThemeDisplay themeDisplay = (ThemeDisplay) request
@@ -442,10 +466,10 @@ public class AnnouncerPortlet extends MVCPortlet {
                         .valueOf(articleConsecutive) + 1));
             }
         }
-        preferences.setValue("articlesRaw", articles);
-        preferences.setValue("articleId", articleIds);
-        preferences.setValue("articleIdWithVersion", articleWithVersion);
-        preferences.setValue("articleIdConsecutive", articleConsecutive);
+        preferences.setValue(ARTICLE_RAW, articles);
+        preferences.setValue(ARTICLE_ID, articleIds);
+        preferences.setValue(ARTICLE_ID_WITH_VERSION, articleWithVersion);
+        preferences.setValue(ARTICLE_ID_CONSECUTIVE, articleConsecutive);
         preferences.store();
     }
 }
