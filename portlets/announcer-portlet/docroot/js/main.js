@@ -22,9 +22,9 @@ AUI.add('my-announcer', function (A, NAME) {
     function MyAnnouncerClass() {
         this.portletNamespace;
         this.failureMessage = new A.Modal({
-            bodyContent: 'Request failed, please try again.',
+            bodyContent: Liferay.Language.get('announcer-request-fail-error'),
             centered: true,
-            headerContent: 'Announcer',
+            headerContent: Liferay.Language.get('announcer-title'),
             visible: false,
             zIndex: Liferay.zIndex.TOOLTIP,
             modal: true
@@ -36,12 +36,12 @@ AUI.add('my-announcer', function (A, NAME) {
         failureMessage: null,    
         
         displayContent: function (groupId, uuid, articleVersionId, url, pns, closeURL,articlesArrayIds) {
-            var instance = this;
-            var title = "Announcer";
-            var tipModal = null;
-            var currentId = 0;
-            var articlesIdLength = articlesArrayIds.length;
-            var currentUrl;
+            var instance = this,
+            	title = Liferay.Language.get('announcer-title'),
+            	tipModal = null,
+            	currentId = 0,
+            	articlesIdLength = articlesArrayIds.length,
+            	currentUrl;
 
             Liferay.Util.openWindow({
                 dialog: {
@@ -49,7 +49,7 @@ AUI.add('my-announcer', function (A, NAME) {
                     cache: false,
                     width: 850,
                     height: 600,
-                    bodyContent: 'Loading content...',
+                    bodyContent: Liferay.Language.get('announcer-loading-content'),
                     modal: true,
                 },
                 id: 'announcer-iframe',
@@ -60,7 +60,7 @@ AUI.add('my-announcer', function (A, NAME) {
                 tipModal = modal;
                 tipModal.addToolbar([
                     {
-                        label: 'Previous',
+                        label: Liferay.Language.get('Previous'),
                         id: this.portletNamespace + 'previous-announcer',
                         cssClass: 'previous-announcer',
                         on: {
@@ -80,7 +80,7 @@ AUI.add('my-announcer', function (A, NAME) {
                         }
                     },
                     {
-                        label: 'Next',
+                        label: Liferay.Language.get('next'),
                         id: this.portletNamespace + 'next-announcer',
                         cssClass: 'next-announcer',
                         on: {
@@ -101,7 +101,7 @@ AUI.add('my-announcer', function (A, NAME) {
                         }
                     },
                     {
-                        label: 'Close',
+                        label: Liferay.Language.get('close'),
                         id: this.portletNamespace + 'close-announcer',
                         cssClass: 'close-announcer',
                         on: {
@@ -174,7 +174,7 @@ AUI.add('my-announcer', function (A, NAME) {
                     cache: false,
                     width: 800,
                     height: 600,
-                    bodyContent: 'Loading content...',
+                    bodyContent: Liferay.Language.get('announcer-loading-content'),
                     modal: true
                 },
                 id: 'articles-iframe',

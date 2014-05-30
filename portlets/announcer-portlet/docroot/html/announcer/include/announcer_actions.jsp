@@ -39,9 +39,9 @@ JournalArticle article = (JournalArticle)row.getObject();
 </portlet:actionURL>
 
 <liferay-ui:icon-menu>
-    <liferay-ui:icon image="top" message="Up" url="${upArticleUrl}" />
-    <liferay-ui:icon image="bottom" message="Down"
+    <liferay-ui:icon image="top" message="up" url="${upArticleUrl}" />
+    <liferay-ui:icon image="bottom" message="down"
         url="${downArticleUrl}" />
-    <liferay-ui:icon image="activate" message="Default Article"
+    <liferay-ui:icon image="activate" message="article-default"
         url="${defaultArticleUrl}" />
 </liferay-ui:icon-menu>
