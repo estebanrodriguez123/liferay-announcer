@@ -26,5 +26,5 @@ ResultRow row = (ResultRow)request.getAttribute(com.liferay.portal.kernel.util.W
 JournalArticle article = (JournalArticle)row.getObject();
 %>
 <span><%= article.getTitleCurrentValue() %></span>
-<liferay-ui:icon image="activate" message="Default Article"/>
-<span>(Default Article)</span>
+<liferay-ui:icon image="activate" message="article-default"/>
+<span>(<liferay-ui:message key="article-default"/>)</span>

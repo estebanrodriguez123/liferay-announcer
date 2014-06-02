@@ -25,8 +25,8 @@
 	String articleId = PortalUtil.getOriginalServletRequest(PortalUtil.getHttpServletRequest(renderRequest)).getParameter("articleId");
 %>
 <div id="<portlet:namespace />articles" class="announcer-articles">
-	            <liferay-ui:journal-article
-	                groupId="<%=themeDisplay.getScopeGroupId()%>"
-	                articleId="<%= articleId %>" />
+	<liferay-ui:journal-article
+		groupId="<%=themeDisplay.getScopeGroupId()%>"
+		articleId="<%= articleId %>" />
 </div>
 

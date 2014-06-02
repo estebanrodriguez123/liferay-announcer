@@ -38,7 +38,7 @@ iteratorURL.setParameter("groupId", String.valueOf(groupId));
     <liferay-ui:success key="selected-articles"
         message="selected-articles-message" />
 	
-	<liferay-ui:message key="article-autosave-message"></liferay-ui:message>
+	<liferay-ui:message key="article-autosave-message"/>
 	
     <aui:form name="fm_add_articles" action="${addArticlesURL}"
         method="POST">
@@ -86,8 +86,7 @@ iteratorURL.setParameter("groupId", String.valueOf(groupId));
 
         <aui:fieldset>
             <aui:button-row>
-                <aui:button type="cancel" value="Close"
-                    onClick="window.close()" />
+                <aui:button type="cancel" value="close" onClick="window.close()" />
             </aui:button-row>
         </aui:fieldset>
     </aui:form>
