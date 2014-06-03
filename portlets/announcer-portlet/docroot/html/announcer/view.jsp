@@ -22,7 +22,7 @@
 <%@include file="/html/init.jsp"%>
 
 <%
-    String articles = renderRequest.getPreferences().getValue("articleId", "0");
+    String articles = renderRequest.getPreferences().getValue(AnnouncerPortlet.ARTICLE_ID, AnnouncerPortlet.LR_EMPTY_VALUE);
     long groupId = themeDisplay.getScopeGroupId();
     
 %>
@@ -30,7 +30,7 @@
 <c:set var="groupId" value="<%= groupId %>"></c:set>
 <portlet:renderURL var="contentURL"
     windowState="<%= LiferayWindowState.POP_UP.toString() %>">
-    <portlet:param name="jspPage" value="/html/announcer/content.jsp" />
+    <portlet:param name="<%=AnnouncerPortlet.JSP_PAGE %>" value="/html/announcer/content.jsp" />
 </portlet:renderURL>
 <portlet:resourceURL var="closeURL"/>
 

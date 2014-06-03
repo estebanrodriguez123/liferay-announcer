@@ -22,9 +22,9 @@
 <%@include file="/html/init.jsp"%>
 
 <%
-	String articleId = PortalUtil.getOriginalServletRequest(PortalUtil.getHttpServletRequest(renderRequest)).getParameter("articleId");
+	String articleId = PortalUtil.getOriginalServletRequest(PortalUtil.getHttpServletRequest(renderRequest)).getParameter(AnnouncerPortlet.ARTICLE_ID);
 %>
-<div id="<portlet:namespace />articles" class="announcer-articles">
+<div id="${pns}articles" class="announcer-articles">
 	<liferay-ui:journal-article
 		groupId="<%=themeDisplay.getScopeGroupId()%>"
 		articleId="<%= articleId %>" />

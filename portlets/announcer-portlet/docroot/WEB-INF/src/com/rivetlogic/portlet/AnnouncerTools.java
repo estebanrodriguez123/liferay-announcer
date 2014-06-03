@@ -19,17 +19,18 @@
 
 package com.rivetlogic.portlet;
 
-import java.io.IOException;
-import java.util.Date;
-
-import javax.portlet.PortletPreferences;
-import javax.portlet.ReadOnlyException;
-import javax.portlet.ValidatorException;
+import static com.rivetlogic.portlet.AnnouncerPortlet.ARTICLES_RAW;
+import static com.rivetlogic.portlet.AnnouncerPortlet.ARTICLE_ID;
+import static com.rivetlogic.portlet.AnnouncerPortlet.ARTICLE_ID_CONSECUTIVE;
+import static com.rivetlogic.portlet.AnnouncerPortlet.ARTICLE_ID_WITH_VERSION;
+import static com.rivetlogic.portlet.AnnouncerPortlet.ARTICLE_RAW;
+import static com.rivetlogic.portlet.AnnouncerPortlet.LR_EMPTY_VALUE;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.theme.ThemeDisplay;
 import com.liferay.portlet.journal.service.JournalArticleLocalServiceUtil;
 import com.rivetlogic.portlet.model.Completed;
@@ -39,6 +40,12 @@ import com.rivetlogic.portlet.service.NotCompletedLocalServiceUtil;
 import com.rivetlogic.portlet.service.persistence.CompletedPK;
 import com.rivetlogic.portlet.service.persistence.NotCompletedPK;
 
+import java.io.IOException;
+import java.util.Date;
+
+import javax.portlet.PortletPreferences;
+import javax.portlet.ReadOnlyException;
+import javax.portlet.ValidatorException;
 /**
  * The Class AnnouncerTools.
  */
@@ -301,24 +308,24 @@ public class AnnouncerTools {
      */
     public static void removeArticle(PortletPreferences pref,
             ThemeDisplay themeDisplay, String articleId) {
-        String articles = pref.getValue("articlesRaw", "0");
+        String articles = pref.getValue(ARTICLE_RAW, LR_EMPTY_VALUE);
 
-        articles = articles.replace(String.valueOf(articleId), ""); // remove id
-        articles = articles.replaceAll("\\s+", " ");
+        articles = articles.replace(String.valueOf(articleId), StringPool.BLANK); // remove id
+        articles = articles.replaceAll("\\s+", StringPool.SPACE);
 
-        String articleIds = articles.trim().replaceAll("\\s", ",");
+        String articleIds = articles.trim().replaceAll("\\s", StringPool.COMMA);
 
-        String articleWithVersionPref = "0";
-        String articleConsecutive = "0";
-        String articleWithVersion = "0";
+        String articleWithVersionPref = LR_EMPTY_VALUE;
+        String articleConsecutive = LR_EMPTY_VALUE;
+        String articleWithVersion = LR_EMPTY_VALUE;
 
-        articleWithVersionPref = pref.getValue("articleIdWithVersion", "0"); // articleId1:version
+        articleWithVersionPref = pref.getValue(ARTICLE_ID_WITH_VERSION, LR_EMPTY_VALUE); // articleId1:version
                                                                              // ...
-        articleConsecutive = pref.getValue("articleIdConsecutive", "0");
+        articleConsecutive = pref.getValue(ARTICLE_ID_CONSECUTIVE, LR_EMPTY_VALUE);
 
         boolean updatedArticleIds = false, updatedArticleVersions = false;
 
-        updatedArticleIds = !pref.getValue("articleId", "0").equals(articleIds);
+        updatedArticleIds = !pref.getValue(ARTICLE_ID, LR_EMPTY_VALUE).equals(articleIds);
 
         long groupId = themeDisplay.getScopeGroupId();
 
@@ -332,10 +339,10 @@ public class AnnouncerTools {
         }
 
         try {
-            pref.setValue("articlesRaw", articles);
-            pref.setValue("articleId", articleIds);
-            pref.setValue("articleIdWithVersion", articleWithVersion);
-            pref.setValue("articleIdConsecutive", articleConsecutive);
+            pref.setValue(ARTICLES_RAW, articles);
+            pref.setValue(ARTICLE_ID, articleIds);
+            pref.setValue(ARTICLE_ID_WITH_VERSION, articleWithVersion);
+            pref.setValue(ARTICLE_ID_CONSECUTIVE, articleConsecutive);
             pref.store();
         } catch (ReadOnlyException e) {
             LOG.error(e);
@@ -356,14 +363,14 @@ public class AnnouncerTools {
     public static String getArticleIdsWithVersion(long groupId,
             String articleIds) {
         StringBuilder articleWithVersionBuilder = new StringBuilder();
-        for (String articleId : articleIds.split(",")) { // StringUtil.split
+        for (String articleId : articleIds.split(StringPool.COMMA)) { // StringUtil.split
             double version;
             try {
                 version = JournalArticleLocalServiceUtil.getLatestVersion(
                         groupId, articleId);
-                articleWithVersionBuilder.append(",");
+                articleWithVersionBuilder.append(StringPool.COMMA);
                 articleWithVersionBuilder.append(articleId);
-                articleWithVersionBuilder.append(":");
+                articleWithVersionBuilder.append(StringPool.COLON);
                 articleWithVersionBuilder.append(version);
             } catch (PortalException e) {
                 LOG.error(e);
@@ -388,6 +395,7 @@ public class AnnouncerTools {
         } catch (SystemException e) {
             LOG.error(e);
         }
+        
         return exist;
     }
 }

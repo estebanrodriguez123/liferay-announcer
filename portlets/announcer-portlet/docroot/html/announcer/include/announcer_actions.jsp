@@ -27,15 +27,15 @@ JournalArticle article = (JournalArticle)row.getObject();
 %>
 
 <portlet:actionURL name="upArticle" var="upArticleUrl">
-    <portlet:param name="articleId" value="<%=article.getArticleId()%>" />
+    <portlet:param name="<%=AnnouncerPortlet.ARTICLE_ID %>" value="<%=article.getArticleId()%>" />
 </portlet:actionURL>
 
 <portlet:actionURL name="downArticle" var="downArticleUrl">
-    <portlet:param name="articleId" value="<%=article.getArticleId()%>" />
+    <portlet:param name="<%=AnnouncerPortlet.ARTICLE_ID %>" value="<%=article.getArticleId()%>" />
 </portlet:actionURL>
 
 <portlet:actionURL name="defaultArticle" var="defaultArticleUrl">
-    <portlet:param name="articleId" value="<%=article.getArticleId()%>" />
+    <portlet:param name="<%=AnnouncerPortlet.ARTICLE_ID %>" value="<%=article.getArticleId()%>" />
 </portlet:actionURL>
 
 <liferay-ui:icon-menu>
