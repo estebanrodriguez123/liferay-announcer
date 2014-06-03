@@ -108,7 +108,7 @@ AUI.add('my-announcer', function (A, NAME) {
                             click: function () {
                                 /*Ajax call to change user preference about displaying the pop up*/
                                 A.io.request(closeURL, {
-                                    method: 'POST',
+                                    method: 'GET',
                                     data: {
                                     	cmd: 'COMPLETED',
                                     	userId: uuid,
@@ -142,7 +142,7 @@ AUI.add('my-announcer', function (A, NAME) {
                     'visibleChange', function () {
                     /*Ajax call to change user preference about displaying the pop up*/
                     A.io.request(closeURL, {
-                        method: 'POST',
+                        method: 'GET',
                         data: {
                         	cmd: 'NOTCOMPLETED',
                         	userId: uuid
@@ -193,7 +193,7 @@ AUI.add('my-announcer', function (A, NAME) {
         handleClick: function (articleId, portletId, cb, closeURL) {
             var instance = this;
             A.io.request(closeURL, {
-                method: 'POST',
+                method: 'GET',
                 data:{
                 	cmd: 'UPDATE-ARTICLE-SELECTION',
                 	articleId: articleId

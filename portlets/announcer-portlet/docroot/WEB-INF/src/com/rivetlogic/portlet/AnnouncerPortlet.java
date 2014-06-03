@@ -45,6 +45,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.servlet.SessionMessages;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.theme.ThemeDisplay;
 import com.liferay.portal.util.PortalUtil;
@@ -64,35 +65,33 @@ public class AnnouncerPortlet extends MVCPortlet {
     private static final String ARTICLE_SELECTION_DELIMITER = ",";
     
     /** The Constant LR_EMPTY_VALUE. */
-    private static final String LR_EMPTY_VALUE = "0";
+    public static final String LR_EMPTY_VALUE = "0";
     
     /** Constants */
-    private static final String DEFAULT_ARTICLE= "defaultArticle";
-    private static final String ARTICLE_ID = "articleId";
-    private static final String ADDED_ARTICLE_IDS = "addedArticleIds";
-    private static final String ARTICLE_ID_CONSECUTIVE = "articleIdConsecutive";
-    private static final String ARTICLE_ID_WITH_VERSION = "articleIdWithVersion";
-    private static final String ARTICLE_VERSION_ID = "articleVersionId";
-    private static final String GROUP_ID = "groupId";
-    private static final String SHOW_ANNOUNCER = "showAnnouncer";
-    private static final String SIGNED_IN = "signedIn";
-    private static final String IDS = "ids";
-    private static final String ARTICLE_DEAFULT = "article-default";
-    private static final String ARTICLE_UP_DOWN = "article-up-down";
-    private static final String CMD = "cmd";
-    private static final String USER_ID = "userId";
-    private static final String COMPLETED = "COMPLETED";
-    private static final String NOTCOMPLETED = "NOTCOMPLETED";
-    private static final String ARTICLE_RAW = "articleRaw";
-    private static final String ARTICLE_SERIAL = "articleSerial";
-    private static final String ARTICLES = "articles";
-    private static final String UPDATE_ARTICLE_SELECTION = "UPDATE-ARTICLE-SELECTION";
-    private static final String EDIT_URL = "/html/announcer/edit.jsp";
+    public static final String JSP_PAGE = "jspPage";
+    public static final String DEFAULT_ARTICLE= "defaultArticle";
+    public static final String ARTICLE_ID = "articleId";
+    public static final String ADDED_ARTICLE_IDS = "addedArticleIds";
+    public static final String ARTICLES_RAW = "articlesRaw";
+    public static final String ARTICLE_ID_CONSECUTIVE = "articleIdConsecutive";
+    public static final String ARTICLE_ID_WITH_VERSION = "articleIdWithVersion";
+    public static final String ARTICLE_VERSION_ID = "articleVersionId";
+    public static final String GROUP_ID = "groupId";
+    public static final String SHOW_ANNOUNCER = "showAnnouncer";
+    public static final String SIGNED_IN = "signedIn";
+    public static final String IDS = "ids";
+    public static final String ARTICLE_DEAFULT = "article-default";
+    public static final String ARTICLE_UP_DOWN = "article-up-down";
+    public static final String CMD = "cmd";
+    public static final String USER_ID = "userId";
+    public static final String COMPLETED = "COMPLETED";
+    public static final String NOTCOMPLETED = "NOTCOMPLETED";
+    public static final String ARTICLE_RAW = "articleRaw";
+    public static final String ARTICLE_SERIAL = "articleSerial";
+    public static final String ARTICLES = "articles";
+    public static final String UPDATE_ARTICLE_SELECTION = "UPDATE-ARTICLE-SELECTION";
+    public static final String EDIT_URL = "/html/announcer/edit.jsp";
     
-    
-    /* (non-Javadoc)
-     * @see javax.portlet.GenericPortlet#render(javax.portlet.RenderRequest, javax.portlet.RenderResponse)
-     */
     @Override
     public void render(RenderRequest request, RenderResponse response) throws PortletException, IOException{
     	
@@ -104,9 +103,6 @@ public class AnnouncerPortlet extends MVCPortlet {
     	super.render(request, response);
     }
     
-    /* (non-Javadoc)
-     * @see com.liferay.util.bridges.mvc.MVCPortlet#doView(javax.portlet.RenderRequest, javax.portlet.RenderResponse)
-     */
     @Override
     public void doView(RenderRequest request, RenderResponse response)
             throws IOException, PortletException {
@@ -132,7 +128,7 @@ public class AnnouncerPortlet extends MVCPortlet {
                             version = JournalArticleLocalServiceUtil
                                     .getLatestVersion(groupId, articleId);
                             articleWithVersionBuilder.append(articleId);
-                            articleWithVersionBuilder.append(":");
+                            articleWithVersionBuilder.append(StringPool.COLON);
                             articleWithVersionBuilder.append(version);
                             if (!articleWithVersionBuilder.toString().equals(
                                     articleIdsWithVersion)) {
@@ -170,9 +166,6 @@ public class AnnouncerPortlet extends MVCPortlet {
         super.doView(request, response);
     }
 
-    /* (non-Javadoc)
-     * @see com.liferay.util.bridges.mvc.MVCPortlet#doEdit(javax.portlet.RenderRequest, javax.portlet.RenderResponse)
-     */
     @Override
     public void doEdit(RenderRequest request, RenderResponse response)
             throws IOException, PortletException {
@@ -246,9 +239,9 @@ public class AnnouncerPortlet extends MVCPortlet {
             Collections.swap(currentArticles, index, index - 1);
         }
 
-        String articlesRaw = "";
+        String articlesRaw = StringPool.BLANK;
         for (int i = 0; i < currentArticles.size(); i++) {
-            articlesRaw += currentArticles.get(i) + " ";
+            articlesRaw += currentArticles.get(i) + StringPool.SPACE;
         }
 
         updatePreferences(request, response, articlesRaw);
@@ -260,7 +253,7 @@ public class AnnouncerPortlet extends MVCPortlet {
 
         SessionMessages.add(request, ARTICLE_UP_DOWN);
 
-        response.setRenderParameter("jspPage", EDIT_URL);
+        response.setRenderParameter(JSP_PAGE, EDIT_URL);
     }
 
     /**
@@ -296,9 +289,9 @@ public class AnnouncerPortlet extends MVCPortlet {
             Collections.swap(currentArticles, index, index + 1);
         }
 
-        String articlesRaw = "";
+        String articlesRaw = StringPool.BLANK;
         for (int i = 0; i < currentArticles.size(); i++) {
-            articlesRaw += currentArticles.get(i) + " ";
+            articlesRaw += currentArticles.get(i) + StringPool.SPACE;
         }
 
         updatePreferences(request, response, articlesRaw);
@@ -310,7 +303,7 @@ public class AnnouncerPortlet extends MVCPortlet {
 
         SessionMessages.add(request, ARTICLE_UP_DOWN);
 
-        response.setRenderParameter("jspPage", EDIT_URL);
+        response.setRenderParameter(JSP_PAGE, EDIT_URL);
     }
 
     /**
@@ -331,9 +324,6 @@ public class AnnouncerPortlet extends MVCPortlet {
         updatePreferences(request, response, articles);
     }
 
-    /* (non-Javadoc)
-     * @see com.liferay.util.bridges.mvc.MVCPortlet#serveResource(javax.portlet.ResourceRequest, javax.portlet.ResourceResponse)
-     */
     @Override
     public void serveResource(ResourceRequest request, ResourceResponse response)
             throws IOException, PortletException {
@@ -385,7 +375,7 @@ public class AnnouncerPortlet extends MVCPortlet {
         String[] articlesSelected; 
         if(LR_EMPTY_VALUE.equalsIgnoreCase(articlesStr)){
         	articlesSelected = new String[1];
-        	articlesSelected[0] = "";
+        	articlesSelected[0] = StringPool.BLANK;
         } else {
         	articlesSelected = articlesStr.split(ARTICLE_SELECTION_DELIMITER);
         }
@@ -408,9 +398,9 @@ public class AnnouncerPortlet extends MVCPortlet {
     	 
     	//Now iterate over the array to form the string
     	for (int j = 0; j < articlesSelected.length; j++) {
-    		if((articlesSelected[j] != LR_EMPTY_VALUE) && !("".equalsIgnoreCase(articlesSelected[j]))){
+    		if((articlesSelected[j] != LR_EMPTY_VALUE) && !(StringPool.BLANK.equalsIgnoreCase(articlesSelected[j]))){
     		    updatedArticleSelection.append(articlesSelected[j]);
-    			updatedArticleSelection.append(" ");
+    			updatedArticleSelection.append(StringPool.SPACE);
     		}
     	}
     	 //If the articleId doesn't exist, then let us add it to selected ids.
@@ -434,7 +424,7 @@ public class AnnouncerPortlet extends MVCPortlet {
             IOException {
         PortletPreferences preferences = request.getPreferences();
         String articleIds = articles.trim().replaceAll("\\s", ARTICLE_SELECTION_DELIMITER);
-        if (articleIds.equals("")) {
+        if (articleIds.equals(StringPool.BLANK)) {
             articleIds = LR_EMPTY_VALUE;
         }
 

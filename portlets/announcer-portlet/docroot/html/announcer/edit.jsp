@@ -24,11 +24,11 @@
 long groupId = themeDisplay.getScopeGroupId();
 
 PortletPreferences preferences = renderRequest.getPreferences();
-String[] ids = preferences.getValue("articleId", "0").split(",");
+String[] ids = preferences.getValue(AnnouncerPortlet.ARTICLE_ID, AnnouncerPortlet.LR_EMPTY_VALUE).split(StringPool.COMMA);
     
 List<JournalArticle> currentArticles = new ArrayList<JournalArticle>();
 if(ids != null){
-    if(!ids[0].equals("0")){        //The ids atributte has no values
+    if(!ids[0].equals(AnnouncerPortlet.LR_EMPTY_VALUE)){        //The ids atributte has no values
         for(int i = 0; i<ids.length; i++){
             if(JournalArticleLocalServiceUtil.hasArticle(groupId, ids[i])){
                 double version = JournalArticleLocalServiceUtil.getLatestVersion(groupId, ids[i]);
@@ -41,7 +41,7 @@ if(ids != null){
     }
 }
 PortletURL iteratorURL = renderResponse.createRenderURL();
-iteratorURL.setParameter("jspPage", "/html/announcer/edit.jsp");
+iteratorURL.setParameter(AnnouncerPortlet.JSP_PAGE, "/html/announcer/edit.jsp");
 %>
 
 <liferay-ui:success key="article-delete"
@@ -56,7 +56,7 @@ iteratorURL.setParameter("jspPage", "/html/announcer/edit.jsp");
 
     <portlet:renderURL var="contentURL"
         windowState="<%= LiferayWindowState.POP_UP.toString() %>">
-        <portlet:param name="jspPage"
+        <portlet:param name="<%=AnnouncerPortlet.JSP_PAGE %>"
             value="/html/announcer/showArticles.jsp" />
         <portlet:param name="groupId" value="${groupId}" />
     </portlet:renderURL>

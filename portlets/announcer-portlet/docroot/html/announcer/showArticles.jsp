@@ -23,15 +23,18 @@
 
 <%
 long groupId = themeDisplay.getScopeGroupId();
+List<Long> folderIds = new ArrayList<Long>();
+folderIds.add(new Long(DLFolderConstants.DEFAULT_PARENT_FOLDER_ID));
+JournalFolderLocalServiceUtil.getSubfolderIds(folderIds, groupId, DLFolderConstants.DEFAULT_PARENT_FOLDER_ID);
 
 PortletURL iteratorURL = renderResponse.createRenderURL();
-iteratorURL.setParameter("jspPage", "/html/announcer/showArticles.jsp");
-iteratorURL.setParameter("groupId", String.valueOf(groupId));
+iteratorURL.setParameter(AnnouncerPortlet.JSP_PAGE, "/html/announcer/showArticles.jsp");
+iteratorURL.setParameter(AnnouncerPortlet.GROUP_ID, String.valueOf(groupId));
 %>
 
 <portlet:resourceURL var="closeURL"/>
 <portlet:actionURL name="addArticles" var="addArticlesURL"/>
-<div id="<portlet:namespace />container">
+<div id="${pns}container">
 
     <liferay-ui:success key="added-articles"
         message="added-articles-message" />
@@ -48,9 +51,10 @@ iteratorURL.setParameter("groupId", String.valueOf(groupId));
             emptyResultsMessage="empty-articles-message">
 
             <liferay-ui:search-container-results
-                total="<%=JournalArticleLocalServiceUtil.searchCount(groupId, 0L, 0) %>"
-                results="<%=JournalArticleLocalServiceUtil.search(groupId, 0L, 0,
-				searchContainer.getStart(), searchContainer.getEnd())%>" />
+                total="<%=JournalArticleLocalServiceUtil.searchCount(groupId, folderIds,
+                		WorkflowConstants.STATUS_APPROVED) %>"
+                results="<%=JournalArticleLocalServiceUtil.search(groupId, folderIds, 
+                		WorkflowConstants.STATUS_APPROVED, searchContainer.getStart(), searchContainer.getEnd())%>" />
 
             <liferay-ui:search-container-row modelVar="content"
                 keyProperty="articleId"
