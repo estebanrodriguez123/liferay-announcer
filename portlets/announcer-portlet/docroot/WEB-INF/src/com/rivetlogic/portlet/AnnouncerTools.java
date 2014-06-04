@@ -58,7 +58,7 @@ public class AnnouncerTools {
     private static final long MILLIS_PER_DAY = 86400000;
     
     /** The user layout pkc. */
-    private static CompletedPK userLayoutPKC = new CompletedPK();
+  //  private static CompletedPK userLayoutPKC = new CompletedPK();
     
     /** The user layout pknc. */
     private static NotCompletedPK userLayoutPKNC = new NotCompletedPK();
@@ -108,6 +108,7 @@ public class AnnouncerTools {
     private static boolean isSameArticlesSetId(String userId, String layoutPK,
             String articlesSetId) {
         try {
+        	CompletedPK userLayoutPKC = new CompletedPK();
             userLayoutPKC.setLAYOUT_PK(layoutPK);
             userLayoutPKC.setUSER_ID(userId);
 
@@ -204,6 +205,7 @@ public class AnnouncerTools {
      */
     public static void addToCompleted(String userId, String layoutPK,
             String articlesSetId) {
+    	CompletedPK userLayoutPKC = new CompletedPK();
         userLayoutPKC.setUSER_ID(userId);
         userLayoutPKC.setLAYOUT_PK(layoutPK);
 
@@ -268,6 +270,7 @@ public class AnnouncerTools {
      * @param layoutPK the layout pk
      */
     private static void deleteCompleted(String userId, String layoutPK) {
+    	CompletedPK userLayoutPKC = new CompletedPK();
         userLayoutPKC.setUSER_ID(userId);
         userLayoutPKC.setLAYOUT_PK(layoutPK);
 
