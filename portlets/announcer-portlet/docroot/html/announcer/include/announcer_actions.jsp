@@ -22,7 +22,7 @@
 <%@include file="/html/init.jsp"%>
 
 <% 
-ResultRow row = (ResultRow)request.getAttribute(com.liferay.portal.kernel.util.WebKeys.SEARCH_CONTAINER_RESULT_ROW);
+ResultRow row = (ResultRow)request.getAttribute(WebKeys.SEARCH_CONTAINER_RESULT_ROW);
 JournalArticle article = (JournalArticle)row.getObject();
 %>
 

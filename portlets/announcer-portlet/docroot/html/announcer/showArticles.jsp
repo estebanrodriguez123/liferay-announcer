@@ -72,12 +72,12 @@ iteratorURL.setParameter(AnnouncerPortlet.GROUP_ID, String.valueOf(groupId));
                     name="article-actions">
 			        <c:choose>
 			        	<c:when test="${  rf:arrContains( addedArticleIds, content.articleId ) }">
-		                    <input type="checkbox" name="selectArticleCheckBox" id="selectArticleCheckBox" checked="checked" 
-		                        onchange="MyAnnouncerClass.handleClick('${content.articleId}', '<%= portletId %>', this, '${closeURL}')" />
+		                    <input type="checkbox" name="${pns}selectArticleCheckBox${content.articleId}" id="${pns}selectArticleCheckBox${content.articleId}" checked="checked" 
+		                        onchange="MyAnnouncerClass.handleClick('${content.articleId}', '${pns}', this, '${closeURL}')" />
 			        	</c:when>
 			        	<c:otherwise>
-		                    <input type="checkbox" name="selectArticleCheckBox" id="selectArticleCheckBox"
-		                        onchange="MyAnnouncerClass.handleClick('${content.articleId}', '<%= portletId %>', this, '${closeURL}')" />
+		                    <input type="checkbox" name="${pns}selectArticleCheckBox${content.articleId}" id="${pns}selectArticleCheckBox${content.articleId}"
+		                        onchange="MyAnnouncerClass.handleClick('${content.articleId}', '${pns }', this, '${closeURL}')" />
 			        	</c:otherwise>
 			        </c:choose>
                 </liferay-ui:search-container-column-text>
