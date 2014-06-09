@@ -19,7 +19,20 @@
 
 package com.rivetlogic.portlet;
 
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.servlet.SessionMessages;
+import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.theme.ThemeDisplay;
+import com.liferay.portal.util.PortalUtil;
+import com.liferay.util.bridges.mvc.MVCPortlet;
+
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -39,19 +52,6 @@ import javax.portlet.ResourceResponse;
 import javax.portlet.ValidatorException;
 import javax.servlet.http.HttpServletRequest;
 
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.servlet.SessionMessages;
-import com.liferay.portal.kernel.util.ParamUtil;
-import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.portal.theme.ThemeDisplay;
-import com.liferay.portal.util.PortalUtil;
-import com.liferay.portlet.journal.service.JournalArticleLocalServiceUtil;
-import com.liferay.util.bridges.mvc.MVCPortlet;
-
 /**
  * The Class AnnouncerPortlet.
  */
@@ -61,6 +61,8 @@ public class AnnouncerPortlet extends MVCPortlet {
     private static final Log LOG = LogFactoryUtil
             .getLog(AnnouncerPortlet.class);
     
+    /** Counter */
+    public static BigInteger COUNTER = null;
     /** The Constant ARTICLE_SELECTION_DELIMITER. */
     private static final String ARTICLE_SELECTION_DELIMITER = ",";
     
@@ -69,6 +71,7 @@ public class AnnouncerPortlet extends MVCPortlet {
     
     /** Constants */
     public static final String JSP_PAGE = "jspPage";
+    public static final String EDIT_TEMPLATE = "edit-template";
     public static final String DEFAULT_ARTICLE= "defaultArticle";
     public static final String ARTICLE_ID = "articleId";
     public static final String ADDED_ARTICLE_IDS = "addedArticleIds";
@@ -90,7 +93,14 @@ public class AnnouncerPortlet extends MVCPortlet {
     public static final String ARTICLE_SERIAL = "articleSerial";
     public static final String ARTICLES = "articles";
     public static final String UPDATE_ARTICLE_SELECTION = "UPDATE-ARTICLE-SELECTION";
-    public static final String EDIT_URL = "/html/announcer/edit.jsp";
+    public static String EDIT_URL = StringPool.BLANK;
+    
+   @Override
+   public void init() throws PortletException {
+	   COUNTER  = BigInteger.ZERO;
+	   EDIT_URL = getInitParameter(EDIT_TEMPLATE);
+	   super.init();
+   }
     
     @Override
     public void render(RenderRequest request, RenderResponse response) throws PortletException, IOException{
@@ -113,47 +123,22 @@ public class AnnouncerPortlet extends MVCPortlet {
         PortletPreferences preferences = request.getPreferences();
         boolean showAnnouncer = false;
         if (themeDisplay.isSignedIn()) {
-            String articleVersionId = preferences.getValue(
-                    ARTICLE_ID_CONSECUTIVE, LR_EMPTY_VALUE);
+            String articleVersionId = preferences.getValue(ARTICLE_ID_CONSECUTIVE, LR_EMPTY_VALUE);
             String articleIds = preferences.getValue(ARTICLE_ID, LR_EMPTY_VALUE);
-            String articleIdsWithVersion = preferences.getValue(
-                    ARTICLE_ID_WITH_VERSION, LR_EMPTY_VALUE);
-
-            StringBuilder articleWithVersionBuilder = new StringBuilder();
             if (!articleIds.equals(LR_EMPTY_VALUE)) {
                 for (String articleId : articleIds.split(ARTICLE_SELECTION_DELIMITER)) {
-                    double version;
-                    try {
-                        if(AnnouncerTools.isArticle(groupId, articleId)) {
-                            version = JournalArticleLocalServiceUtil
-                                    .getLatestVersion(groupId, articleId);
-                            articleWithVersionBuilder.append(articleId);
-                            articleWithVersionBuilder.append(StringPool.COLON);
-                            articleWithVersionBuilder.append(version);
-                            if (!articleWithVersionBuilder.toString().equals(
-                                    articleIdsWithVersion)) {
-                                articleVersionId = String.valueOf(Integer
-                                        .valueOf(articleVersionId) + 1);
-                            }
-                        } else {
-                            AnnouncerTools.removeArticle(preferences, themeDisplay, articleId);
-                        }
-                    } catch (PortalException e) {
-                        LOG.error(e);
-                    } catch (SystemException e) {
-                        LOG.error(e);
-                    }
-                }
-
-                try {
-                    String layoutPK = String.valueOf(themeDisplay.getLayout()
-                            .getPrimaryKey());
-                    showAnnouncer = AnnouncerTools.showAnnouncer(themeDisplay
-                            .getRealUser().getUuid(), layoutPK,
-                            articleVersionId);
-                    request.setAttribute(ARTICLE_VERSION_ID, articleVersionId);
-                } catch (SystemException e) {
-                    LOG.error(e);
+                	if(!AnnouncerTools.isArticle(groupId, articleId)) {
+                		AnnouncerTools.removeArticle(preferences, themeDisplay, articleId);    
+                	}
+                	try {
+                		String layoutPK = String.valueOf(themeDisplay.getLayout()
+                				.getPrimaryKey());
+                		showAnnouncer = AnnouncerTools.showAnnouncer(themeDisplay
+                				.getRealUser().getUuid(), layoutPK, articleVersionId);
+                		request.setAttribute(ARTICLE_VERSION_ID, articleVersionId);
+                	}catch (SystemException e) {
+                		LOG.error(e);
+                	}
                 }
             }
         }
@@ -332,26 +317,24 @@ public class AnnouncerPortlet extends MVCPortlet {
                 .getAttribute(WebKeys.THEME_DISPLAY);
         String layoutPK = String.valueOf(themeDisplay.getLayout()
                 .getPrimaryKey());
+
+        String action = ParamUtil.getString(request, CMD);
         
-        HttpServletRequest servletRequest = PortalUtil.getOriginalServletRequest(PortalUtil.getHttpServletRequest(request));
-
-        String action = servletRequest.getParameter(CMD);
-
         if (action.equals(NOTCOMPLETED)) {
-            String userId = servletRequest.getParameter(USER_ID);
+            String userId = ParamUtil.getString(request, USER_ID);// servletRequest.getParameter(USER_ID);
             Date currentDate = new Date();
 
             AnnouncerTools.addToNotCompleted(userId, layoutPK, currentDate);
             
         } else if (action.equals(COMPLETED)) {
-            String userId = servletRequest.getParameter(USER_ID);
-            String articleSerial = servletRequest.getParameter(ARTICLE_SERIAL);
+            String userId = ParamUtil.getString(request, USER_ID);
+            String articleSerial = ParamUtil.getString(request, ARTICLE_SERIAL);// servletRequest.getParameter(ARTICLE_SERIAL);
 
             AnnouncerTools.addToCompleted(userId, layoutPK, articleSerial);
             
         } else if (UPDATE_ARTICLE_SELECTION.equalsIgnoreCase(action)){
         	
-        	String articleId = servletRequest.getParameter(ARTICLE_ID);
+        	String articleId = ParamUtil.getString(request, ARTICLE_ID);//servletRequest.getParameter(ARTICLE_ID);
         	updateArticleSelection(request, response, articleId);
         } 
 
@@ -429,7 +412,7 @@ public class AnnouncerPortlet extends MVCPortlet {
         }
 
         String articleWithVersionPref = LR_EMPTY_VALUE;
-        String articleConsecutive = LR_EMPTY_VALUE;
+        String articleConsecutive = preferences.getValue(ARTICLE_ID_CONSECUTIVE, LR_EMPTY_VALUE); 
         String articleWithVersion = LR_EMPTY_VALUE;
         if (!articleIds.equals(LR_EMPTY_VALUE)) {
             articleWithVersionPref = preferences.getValue(
@@ -452,10 +435,11 @@ public class AnnouncerPortlet extends MVCPortlet {
             updatedArticleVersions = !articleWithVersion
                     .equals(articleWithVersionPref);
             if (updatedArticleIds || updatedArticleVersions) {
-                articleConsecutive = String.valueOf((int) (Double
-                        .valueOf(articleConsecutive) + 1));
+            	COUNTER = COUNTER.add(BigInteger.ONE);
+                articleConsecutive = COUNTER.toString();
             }
         }
+        
         preferences.setValue(ARTICLE_RAW, articles);
         preferences.setValue(ARTICLE_ID, articleIds);
         preferences.setValue(ARTICLE_ID_WITH_VERSION, articleWithVersion);

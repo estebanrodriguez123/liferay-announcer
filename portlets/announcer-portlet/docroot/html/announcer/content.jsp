@@ -22,7 +22,7 @@
 <%@include file="/html/init.jsp"%>
 
 <%
-	String articleId = PortalUtil.getOriginalServletRequest(PortalUtil.getHttpServletRequest(renderRequest)).getParameter(AnnouncerPortlet.ARTICLE_ID);
+	String articleId = ParamUtil.getString(renderRequest, AnnouncerPortlet.ARTICLE_ID);
 %>
 <div id="${pns}articles" class="announcer-articles">
 	<liferay-ui:journal-article

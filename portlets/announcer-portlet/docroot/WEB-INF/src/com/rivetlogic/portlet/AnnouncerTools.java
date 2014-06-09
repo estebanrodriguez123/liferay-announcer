@@ -30,6 +30,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.theme.ThemeDisplay;
 import com.liferay.portlet.journal.service.JournalArticleLocalServiceUtil;
@@ -54,14 +55,8 @@ public class AnnouncerTools {
     /** The log. */
     private static Log LOG = LogFactoryUtil.getLog(AnnouncerTools.class);
     
-    /** The Constant MILLIS_PER_DAY. */
-    private static final long MILLIS_PER_DAY = 86400000;
-    
-    /** The user layout pkc. */
-  //  private static CompletedPK userLayoutPKC = new CompletedPK();
-    
-    /** The user layout pknc. */
-    private static NotCompletedPK userLayoutPKNC = new NotCompletedPK();
+    /** The Constant ONE_DAY. */
+    private static final long ONE_DAY = 1;
 
     /**
      * Checks if is completed.
@@ -123,7 +118,6 @@ public class AnnouncerTools {
         } catch (SystemException e) {
             LOG.error(e);
         }
-
         return true;
     }
 
@@ -138,6 +132,7 @@ public class AnnouncerTools {
         Date currentDate = null;
         Date notCompletedDate = null;
 
+        NotCompletedPK userLayoutPKNC = new NotCompletedPK();
         userLayoutPKNC.setLAYOUT_PK(layoutPK);
         userLayoutPKNC.setUSER_ID(userId);
 
@@ -147,9 +142,10 @@ public class AnnouncerTools {
             notCompletedDate = user.getPANEL_CLOSE_DATE();
 
             currentDate = new Date();
-            long diff = currentDate.getTime() - notCompletedDate.getTime();
+            
+            int diff = DateUtil.getDaysBetween(currentDate, notCompletedDate);
 
-            if (diff > MILLIS_PER_DAY) {
+            if (diff >= ONE_DAY) {
                 return true;
             }
         } catch (PortalException e) {
@@ -239,6 +235,7 @@ public class AnnouncerTools {
      */
     public static void addToNotCompleted(String userId, String layoutPK,
             Date panelCloseDate) {
+    	NotCompletedPK userLayoutPKNC = new NotCompletedPK();
         userLayoutPKNC.setUSER_ID(userId);
         userLayoutPKNC.setLAYOUT_PK(layoutPK);
 
@@ -290,6 +287,7 @@ public class AnnouncerTools {
      * @param layoutPK the layout pk
      */
     private static void deleteNotCompleted(String userId, String layoutPK) {
+    	NotCompletedPK userLayoutPKNC = new NotCompletedPK();
         userLayoutPKNC.setUSER_ID(userId);
         userLayoutPKNC.setLAYOUT_PK(layoutPK);
 
@@ -366,7 +364,7 @@ public class AnnouncerTools {
     public static String getArticleIdsWithVersion(long groupId,
             String articleIds) {
         StringBuilder articleWithVersionBuilder = new StringBuilder();
-        for (String articleId : articleIds.split(StringPool.COMMA)) { // StringUtil.split
+        for (String articleId : articleIds.split(StringPool.COMMA)) { 
             double version;
             try {
                 version = JournalArticleLocalServiceUtil.getLatestVersion(

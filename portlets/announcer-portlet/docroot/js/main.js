@@ -42,7 +42,6 @@ AUI.add('my-announcer', function (A, NAME) {
             	currentId = 0,
             	articlesIdLength = articlesArrayIds.length,
             	currentUrl;
-
             Liferay.Util.openWindow({
                 dialog: {
                     align: Liferay.Util.Window.ALIGN_CENTER,
@@ -54,7 +53,7 @@ AUI.add('my-announcer', function (A, NAME) {
                 },
                 id: 'announcer-iframe',
                 title: title,
-                uri: url + "&articleId=" + articlesArrayIds[currentId]
+                uri: url + "&" + pns + "articleId=" + articlesArrayIds[currentId]
             }, function (modal) {
                 this.portletNamespace = pns;
                 tipModal = modal;
@@ -67,7 +66,7 @@ AUI.add('my-announcer', function (A, NAME) {
                             click: function () {
                             	if(currentId > 0) {
                             		currentId--;
-                            		currentUrl = url + "&articleId=" + articlesArrayIds[currentId];
+                            		currentUrl = url + "&" + pns + "articleId=" + articlesArrayIds[currentId];
                             		tipModal.get('boundingBox').one('iframe').setAttribute('src', currentUrl);
                             	}
                             	if(currentId == 0) {
@@ -87,7 +86,7 @@ AUI.add('my-announcer', function (A, NAME) {
                             click: function () {
                             	if(currentId < (articlesIdLength-1)) {
                             		currentId++;
-                            		currentUrl = url + "&articleId=" + articlesArrayIds[currentId];
+                            		currentUrl = url + "&" + pns + "articleId=" + articlesArrayIds[currentId];
                             		tipModal.get('boundingBox').one('iframe').setAttribute('src', currentUrl);
                             	}
                             	if(currentId == (articlesIdLength-1)) {
@@ -109,11 +108,11 @@ AUI.add('my-announcer', function (A, NAME) {
                                 /*Ajax call to change user preference about displaying the pop up*/
                                 A.io.request(closeURL, {
                                     method: 'GET',
-                                    data: {
+                                    data: Liferay.Util.ns(pns, {
                                     	cmd: 'COMPLETED',
                                     	userId: uuid,
                                     	articleSerial: articleVersionId
-                                    },
+                                    }),
                                     on: {
                                         failure: function () {
                                             instance.failureMessage.show();
@@ -143,10 +142,10 @@ AUI.add('my-announcer', function (A, NAME) {
                     /*Ajax call to change user preference about displaying the pop up*/
                     A.io.request(closeURL, {
                         method: 'GET',
-                        data: {
+                        data: Liferay.Util.ns(pns,{
                         	cmd: 'NOTCOMPLETED',
                         	userId: uuid
-                        },
+                        }),
                         on: {
                             failure: function () {
                                 instance.failureMessage.show();
@@ -167,7 +166,6 @@ AUI.add('my-announcer', function (A, NAME) {
 
         displayArticles: function (url) {
             var tipModal = null;
-            var title = "Select articles";
             Liferay.Util.openWindow({
                 dialog: {
                     align: Liferay.Util.Window.ALIGN_CENTER,
@@ -178,7 +176,7 @@ AUI.add('my-announcer', function (A, NAME) {
                     modal: true
                 },
                 id: 'articles-iframe',
-                title: title,
+                title: Liferay.Language.get('articles-select'),
                 uri: url
             }, function (modal) {
                 tipModal = modal;
@@ -190,14 +188,14 @@ AUI.add('my-announcer', function (A, NAME) {
             });
         },
 
-        handleClick: function (articleId, portletId, cb, closeURL) {
+        handleClick: function (articleId, pns, cb, closeURL) {
             var instance = this;
             A.io.request(closeURL, {
                 method: 'GET',
-                data:{
+                data:Liferay.Util.ns(pns,{
                 	cmd: 'UPDATE-ARTICLE-SELECTION',
                 	articleId: articleId
-                },
+                }),
                 on: {
                     failure: function () {
                         cb.checked= (cb.checked)? false : true;
