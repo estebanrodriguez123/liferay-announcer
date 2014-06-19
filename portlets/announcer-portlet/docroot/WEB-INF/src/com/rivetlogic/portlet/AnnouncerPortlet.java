@@ -21,6 +21,8 @@ package com.rivetlogic.portlet;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.servlet.SessionMessages;
@@ -28,7 +30,6 @@ import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.theme.ThemeDisplay;
-import com.liferay.portal.util.PortalUtil;
 import com.liferay.util.bridges.mvc.MVCPortlet;
 
 import java.io.IOException;
@@ -50,7 +51,6 @@ import javax.portlet.RenderResponse;
 import javax.portlet.ResourceRequest;
 import javax.portlet.ResourceResponse;
 import javax.portlet.ValidatorException;
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * The Class AnnouncerPortlet.
@@ -86,6 +86,7 @@ public class AnnouncerPortlet extends MVCPortlet {
     public static final String ARTICLE_DEAFULT = "article-default";
     public static final String ARTICLE_UP_DOWN = "article-up-down";
     public static final String CMD = "cmd";
+    public static final String IS_CHECKED = "IS_CHECKED";
     public static final String USER_ID = "userId";
     public static final String COMPLETED = "COMPLETED";
     public static final String NOTCOMPLETED = "NOTCOMPLETED";
@@ -321,24 +322,51 @@ public class AnnouncerPortlet extends MVCPortlet {
         String action = ParamUtil.getString(request, CMD);
         
         if (action.equals(NOTCOMPLETED)) {
-            String userId = ParamUtil.getString(request, USER_ID);// servletRequest.getParameter(USER_ID);
+            String userId = ParamUtil.getString(request, USER_ID);
             Date currentDate = new Date();
 
             AnnouncerTools.addToNotCompleted(userId, layoutPK, currentDate);
             
         } else if (action.equals(COMPLETED)) {
             String userId = ParamUtil.getString(request, USER_ID);
-            String articleSerial = ParamUtil.getString(request, ARTICLE_SERIAL);// servletRequest.getParameter(ARTICLE_SERIAL);
+            String articleSerial = ParamUtil.getString(request, ARTICLE_SERIAL);
 
             AnnouncerTools.addToCompleted(userId, layoutPK, articleSerial);
             
         } else if (UPDATE_ARTICLE_SELECTION.equalsIgnoreCase(action)){
         	
-        	String articleId = ParamUtil.getString(request, ARTICLE_ID);//servletRequest.getParameter(ARTICLE_ID);
+        	String articleId = ParamUtil.getString(request, ARTICLE_ID);
         	updateArticleSelection(request, response, articleId);
-        } 
+        } else if (IS_CHECKED.equalsIgnoreCase(action)){
+        	String articleId = ParamUtil.getString(request, ARTICLE_ID);
+        	isChecked(request, response, articleId);
+        	
+        }
 
         super.serveResource(request, response);
+    }
+    
+    private void isChecked(ResourceRequest request, ResourceResponse response, String articleId){
+    	JSONObject jsonResponse = JSONFactoryUtil.createJSONObject();
+        PortletPreferences preferences = request.getPreferences();
+        String articlesStr = preferences.getValue(ARTICLE_ID, LR_EMPTY_VALUE);
+        String[] articlesSelected; 
+        boolean isChecked = false;
+        if(LR_EMPTY_VALUE.equalsIgnoreCase(articlesStr)){
+        	articlesSelected = new String[1];
+        	articlesSelected[0] = StringPool.BLANK;
+        } else {
+        	articlesSelected = articlesStr.split(ARTICLE_SELECTION_DELIMITER);
+        }
+        
+    	for (int i = 0; i < articlesSelected.length; i++) {
+    		 if(articlesSelected[i].equalsIgnoreCase(articleId)){
+    			 isChecked = true;
+    			 break;
+    		 }
+    	 }
+    	jsonResponse.put(IS_CHECKED, isChecked);
+    	AnnouncerTools.returnJSONObject(response, jsonResponse);
     }
     
     /**
@@ -352,7 +380,6 @@ public class AnnouncerPortlet extends MVCPortlet {
      */
     private void updateArticleSelection(PortletRequest request, PortletResponse response, String articleId)
             throws PortletException, IOException {
-
         PortletPreferences preferences = request.getPreferences();
         String articlesStr = preferences.getValue(ARTICLE_ID, LR_EMPTY_VALUE);
         String[] articlesSelected; 
@@ -390,8 +417,10 @@ public class AnnouncerPortlet extends MVCPortlet {
     	 if(!isDeleted){
     		 updatedArticleSelection.append(articleId);
     	 }
+
         updatePreferences(request, response, updatedArticleSelection.toString());
     }
+    
     
     /**
      * Update preferences.
