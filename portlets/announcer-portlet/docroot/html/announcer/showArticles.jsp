@@ -21,77 +21,23 @@
 
 <%@include file="/html/init.jsp"%>
 
-<%
-long groupId = themeDisplay.getScopeGroupId();
-List<Long> folderIds = new ArrayList<Long>();
-folderIds.add(new Long(DLFolderConstants.DEFAULT_PARENT_FOLDER_ID));
-JournalFolderLocalServiceUtil.getSubfolderIds(folderIds, groupId, DLFolderConstants.DEFAULT_PARENT_FOLDER_ID);
-
-PortletURL iteratorURL = renderResponse.createRenderURL();
-iteratorURL.setParameter(AnnouncerPortlet.JSP_PAGE, "/html/announcer/showArticles.jsp");
-iteratorURL.setParameter(AnnouncerPortlet.GROUP_ID, String.valueOf(groupId));
-%>
-
-<portlet:resourceURL var="closeURL"/>
-<portlet:actionURL name="addArticles" var="addArticlesURL"/>
-<div id="${pns}container">
-
-    <liferay-ui:success key="added-articles"
-        message="added-articles-message" />
-    <liferay-ui:success key="selected-articles"
-        message="selected-articles-message" />
-	
-	<liferay-ui:message key="article-autosave-message"/>
-	
-    <aui:form name="fm_add_articles" action="${addArticlesURL}"
-        method="POST">
-
-        <liferay-ui:search-container delta="5"
-            iteratorURL="<%= iteratorURL %>"
-            emptyResultsMessage="empty-articles-message">
-
-            <liferay-ui:search-container-results
-                total="<%=JournalArticleLocalServiceUtil.searchCount(groupId, folderIds,
-                		WorkflowConstants.STATUS_APPROVED) %>"
-                results="<%=JournalArticleLocalServiceUtil.search(groupId, folderIds, 
-                		WorkflowConstants.STATUS_APPROVED, searchContainer.getStart(), searchContainer.getEnd())%>" />
-
-            <liferay-ui:search-container-row modelVar="content"
-                keyProperty="articleId"
-                className="com.liferay.portlet.journal.model.JournalArticle">
-
-                <liferay-ui:search-container-column-text
-                    name="article-id" value="${content.articleId}" />
-                <liferay-ui:search-container-column-text
-                    name="article-name"
-                    value="${content.titleCurrentValue}" />
-                <liferay-ui:search-container-column-text
-                    name="article-mod-date"
-                    value="${content.modifiedDate}" />
-                <liferay-ui:search-container-column-text
-                    name="article-actions">
-			        <c:choose>
-			        	<c:when test="${  rf:arrContains( addedArticleIds, content.articleId ) }">
-		                    <input type="checkbox" name="${pns}selectArticleCheckBox${content.articleId}" id="${pns}selectArticleCheckBox${content.articleId}" checked="checked" 
-		                        onchange="MyAnnouncerClass.handleClick('${content.articleId}', '${pns}', this, '${closeURL}')" />
-			        	</c:when>
-			        	<c:otherwise>
-		                    <input type="checkbox" name="${pns}selectArticleCheckBox${content.articleId}" id="${pns}selectArticleCheckBox${content.articleId}"
-		                        onchange="MyAnnouncerClass.handleClick('${content.articleId}', '${pns }', this, '${closeURL}')" />
-			        	</c:otherwise>
-			        </c:choose>
-                </liferay-ui:search-container-column-text>
-            </liferay-ui:search-container-row>
-
-            <liferay-ui:search-iterator
-                searchContainer="<%= searchContainer %>" />
-
-        </liferay-ui:search-container>
-
-        <aui:fieldset>
-            <aui:button-row>
-                <aui:button type="cancel" value="close" onClick="window.close()" />
-            </aui:button-row>
-        </aui:fieldset>
-    </aui:form>
-</div>
+<div id="${pns}Tree"></div>
+<aui:script use="rl-journal-tree-view">
+var ${pns}TREE_CONTAINER = "treeDiv";
+var ${pns}treeView;
+${pns}treeView = new A.Rivet.JournalTreeView(
+        	{
+        		namespace: '${pns}',
+        		resourceUrl: '${resourceUrl}',
+        		treeBox: ${pns}TREE_CONTAINER,
+        		groupId: <%=themeDisplay.getScopeGroupId() %>,
+        		rootFolderId:'<%=DLFolderConstants.DEFAULT_PARENT_FOLDER_ID%>',
+        		rootFolderLabel: 'Home'
+        	}
+    );
+</aui:script>
+<aui:fieldset>
+	<aui:button-row>
+		<aui:button type="cancel" value="close" onClick="window.close()" />
+	</aui:button-row>
+</aui:fieldset>

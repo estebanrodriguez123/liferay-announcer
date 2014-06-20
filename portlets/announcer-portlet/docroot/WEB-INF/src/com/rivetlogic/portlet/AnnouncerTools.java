@@ -28,11 +28,14 @@ import static com.rivetlogic.portlet.AnnouncerPortlet.LR_EMPTY_VALUE;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.theme.ThemeDisplay;
+import com.liferay.portal.util.PortalUtil;
 import com.liferay.portlet.journal.service.JournalArticleLocalServiceUtil;
 import com.rivetlogic.portlet.model.Completed;
 import com.rivetlogic.portlet.model.NotCompleted;
@@ -42,11 +45,14 @@ import com.rivetlogic.portlet.service.persistence.CompletedPK;
 import com.rivetlogic.portlet.service.persistence.NotCompletedPK;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Date;
 
 import javax.portlet.PortletPreferences;
+import javax.portlet.PortletResponse;
 import javax.portlet.ReadOnlyException;
 import javax.portlet.ValidatorException;
+import javax.servlet.http.HttpServletResponse;
 /**
  * The Class AnnouncerTools.
  */
@@ -398,5 +404,20 @@ public class AnnouncerTools {
         }
         
         return exist;
+    }
+    
+    public static void returnJSONObject(PortletResponse response, JSONObject jsonObj) {
+        HttpServletResponse servletResponse = PortalUtil.getHttpServletResponse(response);
+        servletResponse.setHeader(HttpHeaders.CACHE_CONTROL, HttpHeaders.CACHE_CONTROL_NO_CACHE_VALUE);
+		servletResponse.setHeader(HttpHeaders.PRAGMA, HttpHeaders.PRAGMA_NO_CACHE_VALUE);
+		servletResponse.setHeader(HttpHeaders.EXPIRES, String.valueOf(AnnouncerPortlet.LR_EMPTY_VALUE));
+        PrintWriter pw;
+        try {
+            pw = servletResponse.getWriter();
+            pw.write(jsonObj.toString());
+            pw.close();
+        } catch (IOException e) {
+            LOG.error("Error while returning json", e);
+        }
     }
 }

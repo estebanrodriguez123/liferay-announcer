@@ -186,23 +186,6 @@ AUI.add('my-announcer', function (A, NAME) {
                     modal.destroy();
                 });
             });
-        },
-
-        handleClick: function (articleId, pns, cb, closeURL) {
-            var instance = this;
-            A.io.request(closeURL, {
-                method: 'GET',
-                data:Liferay.Util.ns(pns,{
-                	cmd: 'UPDATE-ARTICLE-SELECTION',
-                	articleId: articleId
-                }),
-                on: {
-                    failure: function () {
-                        cb.checked= (cb.checked)? false : true;
-                        instance.failureMessage.show();
-                    }
-                }
-            });
         }
     };
     
