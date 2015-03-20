@@ -239,7 +239,7 @@ public class AnnouncerPortlet extends MVCPortlet {
 
         SessionMessages.add(request, ARTICLE_UP_DOWN);
 
-        response.setRenderParameter(JSP_PAGE, EDIT_URL);
+        sendRedirect(request,response);
     }
 
     /**
@@ -289,7 +289,7 @@ public class AnnouncerPortlet extends MVCPortlet {
 
         SessionMessages.add(request, ARTICLE_UP_DOWN);
 
-        response.setRenderParameter(JSP_PAGE, EDIT_URL);
+        sendRedirect(request,response);
     }
 
     /**
